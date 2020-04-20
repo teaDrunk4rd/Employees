@@ -1,4 +1,6 @@
-﻿using DevExpress.Mvvm;
+﻿using DataModels;
+using DevExpress.Mvvm;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -23,5 +25,7 @@ namespace Employees.ViewModels
         public Visibility EditFormVisibility => EditMode ? Visibility.Visible : Visibility.Collapsed;
 
         public ICommand AddCommand => new DelegateCommand(() => EditMode = !EditMode);
+        //var db = new EmployeesDB();
+        //var jj = db.GetTable<Department>().ToList();
     }
 }
