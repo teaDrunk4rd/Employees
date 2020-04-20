@@ -1,0 +1,70 @@
+﻿<Window x:Class="Employees.Views.EmployeeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:r="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
+        xmlns:vm="clr-namespace:Employees.ViewModels"
+        mc:Ignorable="d"
+        Title="Учет сотрудников" Height="450" Width="900" MinWidth="350">
+
+    <Window.DataContext>
+        <vm:EmployeeViewModel />
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="7*" />
+        </Grid.RowDefinitions>
+
+        <r:Ribbon Margin="0, -22, 0, 0" MouseOverBorderBrush="SkyBlue">
+            <RibbonTab Header="Справочники" Height="70" Margin="0,0,0,18">
+                <RibbonGroup Height="70">
+                    <RibbonButton Label="Отделы" LargeImageSource="../img/departments.png" MouseOverBackground="SkyBlue" 
+                                  MouseOverBorderBrush="SkyBlue" Command="{Binding OpenDepartmentWindow}" />
+                    <RibbonButton Label="Должности" LargeImageSource="../img/positions.png" MouseOverBackground="SkyBlue"
+                                  MouseOverBorderBrush="SkyBlue" Command="{Binding OpenPositionWindow}" />
+                </RibbonGroup>
+            </RibbonTab>
+        </r:Ribbon>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <DataGrid Margin="10" MinWidth="650" Visibility="{Binding ListVisibility}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ФИО" />
+                    <DataGridTextColumn Header="Отдел" />
+                    <DataGridTextColumn Header="Должность" />
+                    <DataGridTextColumn Header="Номер" />
+                    <DataGridTextColumn Header="Адрес" />
+                    <DataGridTextColumn Header="Серия номер паспорта" />
+                    <DataGridTextColumn Header="Паспорт выдан" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <TextBlock Text="form" Visibility="{Binding EditFormVisibility}" />
+
+            <Grid Grid.Column="1" Margin="0,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="6*"/>
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="0" Height="25" FontSize="12" Margin="4,0,4,2" 
+                        Command="{Binding AddCommand}" Content="Добавить"/>
+                <Button Grid.Row="1" Height="25" FontSize="12" Margin="4,2" Padding="0" 
+                        Content="Редактировать"/>
+                <Button Grid.Row="3" Height="25" FontSize="12" Margin="4,2" 
+                        Content="Удалить"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
