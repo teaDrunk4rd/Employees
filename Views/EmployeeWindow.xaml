@@ -6,7 +6,7 @@
         xmlns:r="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
         xmlns:vm="clr-namespace:Employees.ViewModels"
         mc:Ignorable="d"
-        Title="Учет сотрудников" Height="450" Width="900" MinWidth="350">
+        Title="Учет сотрудников" Height="450" Width="900"  MinWidth="700" MinHeight="350" Background="#fafafa">
 
     <Window.DataContext>
         <vm:EmployeeViewModel />
@@ -18,8 +18,8 @@
             <RowDefinition Height="7*" />
         </Grid.RowDefinitions>
 
-        <r:Ribbon Margin="0, -22, 0, 0" MouseOverBorderBrush="SkyBlue">
-            <RibbonTab Header="Справочники" Height="70" Margin="0,0,0,18">
+        <r:Ribbon Margin="0 -22 0 0" MouseOverBorderBrush="SkyBlue">
+            <RibbonTab Header="Справочники" Height="70" Margin="0 0 0 18">
                 <RibbonGroup Height="70">
                     <RibbonButton Label="Отделы" LargeImageSource="../img/departments.png" MouseOverBackground="SkyBlue" 
                                   MouseOverBorderBrush="SkyBlue" Command="{Binding OpenDepartmentWindow}" />
@@ -35,21 +35,22 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
 
-            <DataGrid Margin="10" MinWidth="650" Visibility="{Binding ListVisibility}">
+            <DataGrid ItemsSource="{Binding Employees, Mode=OneWay}" Visibility="{Binding ListVisibility}" 
+                      Margin="10" AutoGenerateColumns="False" CanUserAddRows="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ФИО" />
-                    <DataGridTextColumn Header="Отдел" />
-                    <DataGridTextColumn Header="Должность" />
-                    <DataGridTextColumn Header="Номер" />
-                    <DataGridTextColumn Header="Адрес" />
-                    <DataGridTextColumn Header="Серия номер паспорта" />
-                    <DataGridTextColumn Header="Паспорт выдан" />
+                    <DataGridTextColumn Header="ФИО" Binding="{Binding Path=FullName}" />
+                    <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Department.Name}" />
+                    <DataGridTextColumn Header="Должность" Binding="{Binding Path=Position.Name}" />
+                    <DataGridTextColumn Header="Номер" Binding="{Binding Path=Phone}" />
+                    <DataGridTextColumn Header="Адрес" Binding="{Binding Path=Address}" />
+                    <DataGridTextColumn Header="Серия номер паспорта" Binding="{Binding Path=PassportNumberSeries}" />
+                    <DataGridTextColumn Header="Паспорт выдан" Binding="{Binding Path=PassportInfo}" />
                 </DataGrid.Columns>
             </DataGrid>
 
-            <TextBlock Text="form" Visibility="{Binding EditFormVisibility}" />
+            <TextBlock Text="form" Grid.Column="0" Visibility="{Binding EditFormVisibility}" />
 
-            <Grid Grid.Column="1" Margin="0,8">
+            <Grid Grid.Column="1" Margin="0 15">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
@@ -58,11 +59,11 @@
                     <RowDefinition Height="6*"/>
                 </Grid.RowDefinitions>
 
-                <Button Grid.Row="0" Height="25" FontSize="12" Margin="4,0,4,2" 
+                <Button Grid.Row="0" Height="25" FontSize="12" Margin="4 0 4 2" 
                         Command="{Binding AddCommand}" Content="Добавить"/>
-                <Button Grid.Row="1" Height="25" FontSize="12" Margin="4,2" Padding="0" 
+                <Button Grid.Row="1" Height="25" FontSize="12" Margin="4 2" Padding="0" 
                         Content="Редактировать"/>
-                <Button Grid.Row="3" Height="25" FontSize="12" Margin="4,2" 
+                <Button Grid.Row="3" Height="25" FontSize="12" Margin="4 2" 
                         Content="Удалить"/>
             </Grid>
         </Grid>

@@ -1,7 +1,10 @@
-﻿using DevExpress.Mvvm;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using DevExpress.Mvvm;
 using Employees.Views;
 using System.Windows;
 using System.Windows.Input;
+using Employees.Models;
 
 namespace Employees.ViewModels
 {
@@ -18,6 +21,9 @@ namespace Employees.ViewModels
                 RaisePropertiesChanged(nameof(ListVisibility), nameof(EditFormVisibility));
             }
         }
+
+        public ObservableCollection<EmployeeModel> Employees { get; } = 
+            new ObservableCollection<EmployeeModel>(DBModel.EmployeesTable.ToList().Select(e => new EmployeeModel(e)));
 
         public Visibility ListVisibility => EditMode ? Visibility.Collapsed : Visibility.Visible;
 
