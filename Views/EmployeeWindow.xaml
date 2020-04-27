@@ -5,12 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:r="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
         xmlns:vm="clr-namespace:Employees.ViewModels"
+        xmlns:converters="clr-namespace:Employees.Converters"
         mc:Ignorable="d"
         Title="Учет сотрудников" Height="450" Width="900"  MinWidth="700" MinHeight="350" Background="#fafafa">
 
     <Window.DataContext>
         <vm:EmployeeViewModel />
     </Window.DataContext>
+    
+    <Window.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -35,8 +40,9 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
 
-            <DataGrid ItemsSource="{Binding Employees, Mode=OneWay}" Visibility="{Binding ListVisibility}" 
-                      Margin="10" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid ItemsSource="{Binding Employees, Mode=OneWay}"
+                      Visibility="{Binding EditMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Margin="10" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ФИО" Binding="{Binding Path=FullName}" />
                     <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Department.Name}" />
@@ -48,7 +54,8 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <TextBlock Text="form" Grid.Column="0" Visibility="{Binding EditFormVisibility}" />
+            <TextBlock Text="form" Grid.Column="0" 
+                    Visibility="{Binding EditMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={StaticResource TrueValue}}" />
 
             <Grid Grid.Column="1" Margin="0 15">
                 <Grid.RowDefinitions>
