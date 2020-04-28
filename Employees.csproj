@@ -155,6 +155,7 @@
     <Resource Include="img\positions.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Styles.xaml" />
     <Page Include="Views\DepartmentWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

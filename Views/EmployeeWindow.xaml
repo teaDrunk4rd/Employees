@@ -19,17 +19,17 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="7*" />
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="25*" />
         </Grid.RowDefinitions>
 
-        <r:Ribbon Margin="0 -22 0 0" MouseOverBorderBrush="SkyBlue">
-            <RibbonTab Header="Справочники" Height="70" Margin="0 0 0 18">
-                <RibbonGroup Height="70">
-                    <RibbonButton Label="Отделы" LargeImageSource="../img/departments.png" MouseOverBackground="SkyBlue" 
-                                  MouseOverBorderBrush="SkyBlue" Command="{Binding OpenDepartmentWindow}" />
-                    <RibbonButton Label="Должности" LargeImageSource="../img/positions.png" MouseOverBackground="SkyBlue"
-                                  MouseOverBorderBrush="SkyBlue" Command="{Binding OpenPositionWindow}" />
+        <r:Ribbon Margin="0 -52 0 0" MouseOverBorderBrush="SkyBlue">
+            <RibbonTab Header="Справочники" Height="80" Margin="0">
+                <RibbonGroup Header="Справочники">
+                    <RibbonButton Label="Отделы" LargeImageSource="../img/departments.png" Command="{Binding OpenDepartmentWindow}" 
+                                  MouseOverBackground="SkyBlue" PressedBorderBrush="SkyBlue" PressedBackground="SkyBlue" MouseOverBorderBrush="SkyBlue" />
+                    <RibbonButton Label="Должности" LargeImageSource="../img/positions.png" Command="{Binding OpenPositionWindow}"
+                                  MouseOverBackground="SkyBlue" PressedBorderBrush="SkyBlue" PressedBackground="SkyBlue" MouseOverBorderBrush="SkyBlue" />
                 </RibbonGroup>
             </RibbonTab>
         </r:Ribbon>
@@ -41,8 +41,7 @@
             </Grid.ColumnDefinitions>
 
             <DataGrid ItemsSource="{Binding Employees, Mode=OneWay}"
-                      Visibility="{Binding EditMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                      Margin="10" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+                      Visibility="{Binding EditMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ФИО" Binding="{Binding Path=FullName}" />
                     <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Department.Name}" />
@@ -66,12 +65,9 @@
                     <RowDefinition Height="6*"/>
                 </Grid.RowDefinitions>
 
-                <Button Grid.Row="0" Height="25" FontSize="12" Margin="4 0 4 2" 
-                        Command="{Binding AddCommand}" Content="Добавить"/>
-                <Button Grid.Row="1" Height="25" FontSize="12" Margin="4 2" Padding="0" 
-                        Content="Редактировать"/>
-                <Button Grid.Row="3" Height="25" FontSize="12" Margin="4 2" 
-                        Content="Удалить"/>
+                <Button Grid.Row="0" Margin="4 0 4 2" Command="{Binding AddCommand}" Content="Добавить"/>
+                <Button Grid.Row="1" Height="25" Margin="4 2" Padding="0" Content="Редактировать"/>
+                <Button Grid.Row="3" Height="25" Margin="4 2" Content="Удалить"/>
             </Grid>
         </Grid>
     </Grid>
