@@ -4,34 +4,66 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Employees.ViewModels"
-        xmlns:converters="clr-namespace:Employees.Converters"
+        xmlns:classes="clr-namespace:Employees.Classes"
+        xmlns:converters="clr-namespace:Employees.Classes.Converters"
         mc:Ignorable="d"
         Title="Отделы" Height="400" Width="450" MinWidth="350" MinHeight="350" Background="#fafafa">
 
     <Window.DataContext>
         <vm:DepartmentViewModel />
     </Window.DataContext>
-    
+
     <Window.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:WindowModeToVisibilityConverter x:Key="WindowModeToVisibilityConverter" />
     </Window.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
 
-        <DataGrid ItemsSource="{Binding Departments, Mode=OneWay}" 
-                  Visibility="{Binding EditMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+        <DataGrid ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}"
+                  Visibility="{Binding Mode, Converter={StaticResource WindowModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Read}}"
                   Margin="10 0 10 10" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" Width="*"/>
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
 
-        <TextBlock Grid.Column="0" Text="form" 
-                Visibility="{Binding EditMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={StaticResource TrueValue}}" />
+        <GroupBox Header="Добавление" Margin="10"
+                  Visibility="{Binding Mode, Converter={StaticResource WindowModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Add}}"> <!--show border-->
+            <Grid>
+                <StackPanel>
+                    <Label Content="Наименование" />
+                    <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="3">
+                        <TextBox DataContext="{Binding AppendableDepartment}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                 ScrollViewer.CanContentScroll="False" Margin="5 1" /> <!--hide scroll-->
+                    </Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <Button Height="25" FontSize="12" Margin="4 0" Command="{Binding AddCommand}" Content="ОК" />
+                    <Button Height="25" FontSize="12" Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Редактирование" Margin="10"
+                  Visibility="{Binding Mode, Converter={StaticResource WindowModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Edit}}"> <!--show border-->
+            <Grid>
+                <StackPanel>
+                    <Label Content="Наименование" />
+                    <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="3">
+                        <TextBox DataContext="{Binding SelectedDepartment}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                 ScrollViewer.CanContentScroll="False" Margin="5 1" /> <!--hide scroll-->
+                    </Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <Button Height="25" FontSize="12" Margin="4 0" Command="{Binding EditCommand}" Content="ОК" />
+                    <Button Height="25" FontSize="12" Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
 
         <Grid Grid.Column="1" Margin="0 15">
             <Grid.RowDefinitions>
@@ -42,12 +74,12 @@
                 <RowDefinition Height="7*" />
             </Grid.RowDefinitions>
 
-            <Button Grid.Row="0" Height="25" FontSize="12" Margin="4 0 4 2"
-                    Command="{Binding AddCommand}" Content="Добавить" />
-            <Button Grid.Row="1" Height="25" FontSize="12" Margin="4 2" Padding="0"
-                    Content="Редактировать" />
-            <Button Grid.Row="3" Height="25" FontSize="12" Margin="4 2"
-                    Content="Удалить" />
+            <Button Grid.Row="0" Height="25" FontSize="12" Margin="4 0 4 2" Content="Добавить"
+                    Command="{Binding ShowAddForm}" />
+            <Button Grid.Row="1" Height="25" FontSize="12" Margin="4 2" Padding="0" Content="Редактировать"
+                    Command="{Binding ShowEditForm}" />
+            <Button Grid.Row="3" Height="25" FontSize="12" Margin="4 2" Content="Удалить"
+                    Command="{Binding DeleteCommand}" />
         </Grid>
     </Grid>
 </Window>

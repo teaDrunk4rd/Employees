@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:r="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
         xmlns:vm="clr-namespace:Employees.ViewModels"
-        xmlns:converters="clr-namespace:Employees.Converters"
+        xmlns:converters="clr-namespace:Employees.Classes.Converters"
         mc:Ignorable="d"
         Title="Учет сотрудников" Height="450" Width="900"  MinWidth="700" MinHeight="350" Background="#fafafa">
 

@@ -11,6 +11,8 @@ namespace Employees.Models
     class DBModel
     {
         public static EmployeesDB EmployeesDB { get; } = new EmployeesDB();
+        
+        public static DataContext Context { get; } = new DataContext();
 
         public static ITable<Employee> EmployeesTable { get; } 
             = EmployeesDB.GetTable<Employee>().LoadWith(e => e.Department).LoadWith(e => e.Position);

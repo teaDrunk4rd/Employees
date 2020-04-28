@@ -4,25 +4,109 @@ using Employees.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Employees.Classes;
+using LinqToDB;
 
 namespace Employees.ViewModels
 {
     class DepartmentViewModel : ViewModelBase
     {
-        private bool _editMode;
+        private WindowMode _mode;
+        private Department _selectedDepartment;
+        private Department _appendableDepartment;
+        private ObservableCollection<Department> _departments
+            = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
 
-        public bool EditMode
+        public WindowMode Mode
         {
-            get => _editMode;
+            get => _mode;
             set
             {
-                _editMode = value;
-                RaisePropertyChanged(nameof(EditMode));
+                if (Equals(_mode, value)) return;
+                _mode = value;
+                RaisePropertyChanged(nameof(Mode));
             }
         }
 
-        public ObservableCollection<Department> Departments { get; } = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList());
-        
-        public ICommand AddCommand => new DelegateCommand(() => EditMode = !EditMode);
+        public Department SelectedDepartment
+        {
+            get => _selectedDepartment;
+            set
+            {
+                if (Equals(_selectedDepartment, value)) return;
+                _selectedDepartment = value;
+                RaisePropertiesChanged(nameof(SelectedDepartment));
+            }
+        }
+
+        public Department AppendableDepartment
+        {
+            get => _appendableDepartment;
+            set
+            {
+                if (Equals(_appendableDepartment, value)) return;
+                _appendableDepartment = value;
+                RaisePropertiesChanged(nameof(AppendableDepartment));
+            }
+        }
+
+        public ObservableCollection<Department> Departments
+        {
+            get => _departments;
+            set
+            {
+                if (Equals(_departments, value)) return;
+                _departments = value;
+                RaisePropertyChanged(nameof(Departments));
+            }
+        }
+
+        public ICommand ShowAddForm => new DelegateCommand(() =>
+        {
+            Mode = WindowMode.Add;
+            AppendableDepartment = new Department();
+        }, () =>  Mode == WindowMode.Read);
+
+        public ICommand ShowEditForm => new DelegateCommand(() => Mode = WindowMode.Edit, 
+            () => Mode == WindowMode.Read && SelectedDepartment != default);
+
+        public ICommand AddCommand => new DelegateCommand(() =>
+        {
+            DBModel.Context.Insert(AppendableDepartment);
+            Clear();
+            SelectedDepartment = Departments.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
+        }, () => CanExecuteUpsertCommand(AppendableDepartment));
+
+        public ICommand EditCommand => new DelegateCommand(() =>
+        {
+            DBModel.EmployeesDB.Update(SelectedDepartment);
+            Clear();
+        }, () => CanExecuteUpsertCommand(SelectedDepartment));
+
+        public ICommand DeleteCommand => new DelegateCommand(() =>
+        {
+            DBModel.EmployeesDB.Delete(SelectedDepartment);
+            Clear();
+            SelectedDepartment = default;
+        }, () =>  Mode == WindowMode.Read && SelectedDepartment != default);
+
+        public ICommand ClearCommand => new DelegateCommand(Clear);
+
+        private void Clear()
+        {
+            UpdateDepartments();
+            Mode = WindowMode.Read;
+        }
+
+        private void UpdateDepartments()
+        {
+            var selectedId = SelectedDepartment?.Id;
+            Departments = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
+            if (selectedId != default)
+                SelectedDepartment = Departments.FirstOrDefault(d => d.Id == selectedId);
+        }
+
+        private static bool CanExecuteUpsertCommand(Department department)
+            => department != null && department.Name != string.Empty && department.Name != default;
     }
 }
