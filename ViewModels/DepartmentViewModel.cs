@@ -106,7 +106,8 @@ namespace Employees.ViewModels
                 SelectedDepartment = Departments.FirstOrDefault(d => d.Id == selectedId);
         }
 
-        private static bool CanExecuteUpsertCommand(Department department)
-            => department != null && department.Name != string.Empty && department.Name != default;
+        private bool CanExecuteUpsertCommand(Department department)
+            => department != null && department.Name != string.Empty && department.Name != default &&
+               !Departments.Any(d => d.Name == department.Name && d.Id != department.Id);
     }
 }
