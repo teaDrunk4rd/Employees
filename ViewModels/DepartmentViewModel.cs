@@ -35,7 +35,7 @@ namespace Employees.ViewModels
             {
                 if (Equals(_selectedDepartment, value)) return;
                 _selectedDepartment = value;
-                RaisePropertiesChanged(nameof(SelectedDepartment));
+                RaisePropertyChanged(nameof(SelectedDepartment));
             }
         }
 
@@ -46,7 +46,7 @@ namespace Employees.ViewModels
             {
                 if (Equals(_appendableDepartment, value)) return;
                 _appendableDepartment = value;
-                RaisePropertiesChanged(nameof(AppendableDepartment));
+                RaisePropertyChanged(nameof(AppendableDepartment));
             }
         }
 
