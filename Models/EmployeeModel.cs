@@ -1,4 +1,5 @@
-﻿using DataModels;
+﻿using System;
+using DataModels;
 
 namespace Employees.Models
 {
@@ -15,6 +16,8 @@ namespace Employees.Models
 
         public EmployeeModel(Employee employee)
         {
+            if (employee == null) return;
+
             Id = employee.Id;
             FullName = $"{employee.Surname} {employee.Name} {employee.Patronymic}";
             Phone = employee.Phone;
@@ -23,6 +26,28 @@ namespace Employees.Models
             PassportInfo = $"{employee.PassportInfoWhen:dd.MM.yyyy} {employee.PassportInfoWhom}";
             Department = employee.Department;
             Position = employee.Position;
+        }
+
+        public Employee GetEmployee()
+        {
+            var fullName = FullName.Split();
+            var passportInfo = PassportInfo.Split(new[] {' '}, 2);
+            return new Employee
+            {
+                Id = Id,
+                Surname = fullName[0],
+                Name = fullName[1],
+                Patronymic = fullName.Length == 3 ? fullName[2] : null,
+                Phone = Phone,
+                Address = Address,
+                PassportNumberSeries = PassportNumberSeries,
+                PassportInfoWhen = DateTime.Parse(passportInfo[0]),
+                PassportInfoWhom = passportInfo[1],
+                Department = Department,
+                DepartmentId = Department?.Id,
+                Position = Position,
+                PositionId = Position?.Id
+            };
         }
     }
 }

@@ -107,7 +107,7 @@ namespace Employees.ViewModels
         }
 
         private bool CanExecuteUpsertCommand(Position position)
-            => position != null && position.Name != string.Empty && position.Name != default &&
+            => position != null && !position.Name.IsEmpty() &&
                !Positions.Any(d => d.Name == position.Name && d.Id != position.Id);
     }
 }

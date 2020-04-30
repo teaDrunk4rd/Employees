@@ -19,7 +19,7 @@
                         </Border>
 
                         <Border Grid.Row="1" BorderThickness="1 0 1 1" BorderBrush="DarkGray">
-                            <ContentPresenter Margin="4" />
+                            <ContentPresenter Margin="4 4 4 6" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -55,4 +55,9 @@
         <Setter Property="CornerRadius" Value="3" />
     </Style>
     
+    
+    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Margin" Value="5 1" />
+    </Style>
+
 </ResourceDictionary>

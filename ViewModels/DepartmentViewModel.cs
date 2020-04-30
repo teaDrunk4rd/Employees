@@ -107,7 +107,7 @@ namespace Employees.ViewModels
         }
 
         private bool CanExecuteUpsertCommand(Department department)
-            => department != null && department.Name != string.Empty && department.Name != default &&
+            => department != null && !department.Name.IsEmpty() &&
                !Departments.Any(d => d.Name == department.Name && d.Id != department.Id);
     }
 }
