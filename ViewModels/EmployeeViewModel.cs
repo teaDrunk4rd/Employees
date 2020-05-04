@@ -15,14 +15,10 @@ namespace Employees.ViewModels
     {
         private WindowMode _mode;
         private Employee _selectedEmployee;
-        private Employee _appendableEmployee;
+        private Employee _employee;
         private ObservableCollection<EmployeeModel> _employees
             = new ObservableCollection<EmployeeModel>(DBModel.EmployeesTable.ToList()
                 .Select(e => new EmployeeModel(e)).OrderBy(e => e.FullName));
-        private ObservableCollection<Position> _positions // TODO: привязать модели
-            = new ObservableCollection<Position>(DBModel.PositionsTable.ToList().OrderBy(d => d.Name));
-        private ObservableCollection<Department> _departments
-            = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
 
         public WindowMode Mode
         {
@@ -58,14 +54,14 @@ namespace Employees.ViewModels
             }
         }
 
-        public Employee AppendableEmployee
+        public Employee Employee
         {
-            get => _appendableEmployee;
+            get => _employee;
             set
             {
-                if (Equals(_appendableEmployee, value)) return;
-                _appendableEmployee = value;
-                RaisePropertyChanged(nameof(AppendableEmployee));
+                if (Equals(_employee, value)) return;
+                _employee = value;
+                RaisePropertyChanged(nameof(Employee));
             }
         }
 
@@ -79,86 +75,89 @@ namespace Employees.ViewModels
                 RaisePropertyChanged(nameof(Employees));
             }
         }
+        
+        public DepartmentViewModel DepartmentViewModel { get; } = new DepartmentViewModel();
+        
+        public PositionViewModel PositionViewModel { get; } = new PositionViewModel();
 
-        public ObservableCollection<Position> Positions
+        public EmployeeViewModel()
         {
-            get => _positions;
-            set
-            {
-                if (Equals(_positions, value)) return;
-                _positions = value;
-                RaisePropertyChanged(nameof(Positions));
-            }
-        }
-
-        public ObservableCollection<Department> Departments
-        {
-            get => _departments;
-            set
-            {
-                if (Equals(_departments, value)) return;
-                _departments = value;
-                RaisePropertyChanged(nameof(Departments));
-            }
+            PositionViewModel.OnUpdateCollection = new DelegateCommand(UpdateEverything);
+            DepartmentViewModel.OnUpdateCollection = new DelegateCommand(UpdateEverything);
         }
 
         public ICommand ShowAddForm => new DelegateCommand(() =>
         {
             Mode = WindowMode.Add;
-            AppendableEmployee = new Employee{PassportInfoWhen = DateTime.Today};
+            Employee = new Employee{PassportInfoWhen = DateTime.Today};
         }, () =>  Mode == WindowMode.Read);
 
         public ICommand ShowEditForm => new DelegateCommand(() =>
         {
+            Employee = (Employee) SelectedEmployee.Clone();
             Mode = WindowMode.Edit;
-            UpdateDepartments(SelectedEmployee);
-            UpdatePositions(SelectedEmployee);
-            RaisePropertyChanged(nameof(SelectedEmployee));
+            UpdatePosition();
+            UpdateDepartment();
         }, 
         () => Mode == WindowMode.Read && SelectedEmployee != default);
 
         public ICommand AddCommand => new DelegateCommand(() =>
         {
-            AppendableEmployee.DepartmentId = AppendableEmployee.Department?.Id;
-            AppendableEmployee.PositionId = AppendableEmployee.Position?.Id;
-            DBModel.Context.Insert(AppendableEmployee);
-            Clear();
+            DBModel.Context.Insert(Employee);
+            ClearWithUpdate();
             SelectedEmployee = Employees.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2).GetEmployee();
-        }, () => CanExecuteUpsertCommand(AppendableEmployee));
+        }, () => CanExecuteUpsertCommand(Employee));
 
         public ICommand EditCommand => new DelegateCommand(() =>
         {
+            SelectedEmployee = (Employee) Employee.Clone();
             SelectedEmployee.DepartmentId = SelectedEmployee.Department?.Id;
             SelectedEmployee.PositionId = SelectedEmployee.Position?.Id;
             DBModel.EmployeesDB.Update(SelectedEmployee);
-            Clear();
+            ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(SelectedEmployee));
 
         public ICommand DeleteCommand => new DelegateCommand(() =>
         {
             DBModel.EmployeesDB.Delete(SelectedEmployee);
-            Clear();
+            Employees.Remove(SelectedEmployeeModel);
             SelectedEmployee = default;
+            Mode = WindowMode.Read;
         }, () =>  Mode == WindowMode.Read && SelectedEmployee != default);
 
         public ICommand ClearCommand => new DelegateCommand(Clear);
         
         public ICommand OpenDepartmentWindow => new DelegateCommand(() =>
         {
-            var departmentWindow = new DepartmentWindow();
+            DepartmentViewModel.Mode = WindowMode.Read;
+            var departmentWindow = new DepartmentWindow {DataContext = DepartmentViewModel};
             departmentWindow.Show();
         });
 
         public ICommand OpenPositionWindow => new DelegateCommand(() =>
         {
-            var positionWindow = new PositionWindow();
+            PositionViewModel.Mode = WindowMode.Read;
+            var positionWindow = new PositionWindow {DataContext = PositionViewModel};
             positionWindow.Show();
         });
 
         private void Clear()
         {
-            UpdateEmployees();
+            Employee = default;
             Mode = WindowMode.Read;
+        }
+
+        private void ClearWithUpdate()
+        {
+            Clear();
+            UpdateEmployees();
+        }
+
+        private void UpdateEverything()
+        {
+            UpdateEmployees();
+            UpdatePosition();
+            UpdateDepartment();
         }
 
         private void UpdateEmployees()
@@ -170,18 +169,26 @@ namespace Employees.ViewModels
                 SelectedEmployeeModel = Employees.FirstOrDefault(d => d.Id == selectedId);
         }
 
-        private void UpdatePositions(Employee employee)
+        private void UpdatePosition()
         {
-            Positions = new ObservableCollection<Position>(DBModel.PositionsTable.ToList().OrderBy(d => d.Name));
-            if (employee.Position != default)
-                employee.Position = Positions.First(p => p.Id == employee.Position.Id);
+            if (Mode == WindowMode.Read) return;
+            
+            if (Employee?.Position != default)
+                Employee.Position = PositionViewModel.Positions.FirstOrDefault(p => p.Id == Employee.Position.Id);
+            else if (Employee?.PositionId != default)
+                Employee.Position = PositionViewModel.Positions.FirstOrDefault(p => p.Id == Employee.PositionId);
+            RaisePropertyChanged(nameof(Employee));
         }
-
-        private void UpdateDepartments(Employee employee)
+        
+        private void UpdateDepartment()
         {
-            Departments = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
-            if (employee.Department != default)
-                employee.Department = Departments.First(p => p.Id == employee.Department.Id);
+            if (Mode == WindowMode.Read) return;
+            
+            if (Employee?.Department != null)
+                Employee.Department = DepartmentViewModel.Departments.FirstOrDefault(p => p.Id == Employee.Department.Id);
+            else if (Employee?.DepartmentId != default)
+                Employee.Department = DepartmentViewModel.Departments.FirstOrDefault(p => p.Id == Employee.DepartmentId);
+            RaisePropertyChanged(nameof(Employee));
         }
 
         private bool CanExecuteUpsertCommand(Employee employee)

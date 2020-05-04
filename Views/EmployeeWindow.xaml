@@ -63,7 +63,7 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding AppendableEmployee}">
+                    <StackPanel Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}">
                         <Label Content="Фамилия" />
                         <Border Style="{StaticResource TextBoxBorder}">
                             <TextBox Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}" />
@@ -86,18 +86,18 @@
                         <Label Content="Должность" />
                         <Border Style="{StaticResource TextBoxBorder}"> <!-- кнопка пропадает, съедает низ букв -->
                             <ComboBox DisplayMemberPath="Name" Height="25" Margin="5 1"
-                                      ItemsSource="{Binding Positions}"
-                                      SelectedItem="{Binding AppendableEmployee.Position}" />
+                                      ItemsSource="{Binding PositionViewModel.Positions}"
+                                      SelectedItem="{Binding Employee.Position}" />
                         </Border>
                         <Label Content="Отдел" />
                         <Border Style="{StaticResource TextBoxBorder}"> <!-- кнопка пропадает, съедает низ букв -->
                             <ComboBox DisplayMemberPath="Name" Height="25" Margin="5 1"
-                                      ItemsSource="{Binding Departments}"
-                                      SelectedItem="{Binding AppendableEmployee.Department}" />
+                                      ItemsSource="{Binding DepartmentViewModel.Departments}"
+                                      SelectedItem="{Binding Employee.Department}" />
                         </Border>
                     </StackPanel>
                     
-                    <StackPanel Grid.Column="2" Grid.ColumnSpan="2" DataContext="{Binding AppendableEmployee}">
+                    <StackPanel Grid.Column="2" Grid.ColumnSpan="2" DataContext="{Binding Employee}">
                         <Label Content="Адрес регистрации" />
                         <Border Style="{StaticResource TextBoxBorder}">
                             <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
@@ -145,7 +145,7 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding SelectedEmployee}">
+                    <StackPanel Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}">
                         <Label Content="Фамилия" />
                         <Border Style="{StaticResource TextBoxBorder}">
                             <TextBox Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}" />
@@ -168,18 +168,18 @@
                         <Label Content="Должность" />
                         <Border Style="{StaticResource TextBoxBorder}"> <!-- кнопка пропадает, съедает низ букв -->
                             <ComboBox DisplayMemberPath="Name" Height="25" Margin="5 1"
-                                      ItemsSource="{Binding Positions}"
-                                      SelectedItem="{Binding SelectedEmployee.Position}" />
+                                      ItemsSource="{Binding PositionViewModel.Positions}"
+                                      SelectedItem="{Binding Employee.Position}" />
                         </Border>
                         <Label Content="Отдел" />
                         <Border Style="{StaticResource TextBoxBorder}"> <!-- кнопка пропадает, съедает низ букв -->
                             <ComboBox DisplayMemberPath="Name" Height="25" Margin="5 1"
-                                      ItemsSource="{Binding Departments}"
-                                      SelectedItem="{Binding SelectedEmployee.Department}" />
+                                      ItemsSource="{Binding DepartmentViewModel.Departments}"
+                                      SelectedItem="{Binding Employee.Department}" />
                         </Border>
                     </StackPanel>
                     
-                    <StackPanel Grid.Column="2" Grid.ColumnSpan="2" DataContext="{Binding SelectedEmployee}">
+                    <StackPanel Grid.Column="2" Grid.ColumnSpan="2" DataContext="{Binding Employee}">
                         <Label Content="Адрес регистрации" />
                         <Border Style="{StaticResource TextBoxBorder}">
                             <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />

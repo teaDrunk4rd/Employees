@@ -86,6 +86,7 @@
     </Compile>
     <Compile Include="Classes\Converters\WindowModeToVisibilityConverter.cs" />
     <Compile Include="Classes\Extensions.cs" />
+    <Compile Include="Classes\Mode.cs" />
     <Compile Include="Classes\WindowMode.cs" />
     <Compile Include="Models\DBModel.cs" />
     <Compile Include="Models\EmployeeModel.cs" />

@@ -13,7 +13,7 @@ namespace Employees.ViewModels
     {
         private WindowMode _mode;
         private Department _selectedDepartment;
-        private Department _appendableDepartment;
+        private Department _department;
         private ObservableCollection<Department> _departments
             = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
 
@@ -39,14 +39,14 @@ namespace Employees.ViewModels
             }
         }
 
-        public Department AppendableDepartment
+        public Department Department
         {
-            get => _appendableDepartment;
+            get => _department;
             set
             {
-                if (Equals(_appendableDepartment, value)) return;
-                _appendableDepartment = value;
-                RaisePropertyChanged(nameof(AppendableDepartment));
+                if (Equals(_department, value)) return;
+                _department = value;
+                RaisePropertyChanged(nameof(Department));
             }
         }
 
@@ -61,41 +61,56 @@ namespace Employees.ViewModels
             }
         }
 
+        public ICommand OnUpdateCollection { get; set; }
+
         public ICommand ShowAddForm => new DelegateCommand(() =>
         {
             Mode = WindowMode.Add;
-            AppendableDepartment = new Department();
+            Department = new Department();
         }, () =>  Mode == WindowMode.Read);
 
-        public ICommand ShowEditForm => new DelegateCommand(() => Mode = WindowMode.Edit, 
-            () => Mode == WindowMode.Read && SelectedDepartment != default);
+        public ICommand ShowEditForm => new DelegateCommand(() => 
+        {
+            Mode = WindowMode.Edit;
+            Department = (Department) SelectedDepartment.Clone();
+        }, 
+        () => Mode == WindowMode.Read && SelectedDepartment != default);
 
         public ICommand AddCommand => new DelegateCommand(() =>
         {
-            DBModel.Context.Insert(AppendableDepartment);
-            Clear();
+            DBModel.Context.Insert(Department);
+            ClearWithUpdate();
             SelectedDepartment = Departments.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
-        }, () => CanExecuteUpsertCommand(AppendableDepartment));
+        }, () => CanExecuteUpsertCommand(Department));
 
         public ICommand EditCommand => new DelegateCommand(() =>
         {
+            SelectedDepartment = (Department) Department.Clone();
             DBModel.EmployeesDB.Update(SelectedDepartment);
-            Clear();
+            ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(SelectedDepartment));
 
         public ICommand DeleteCommand => new DelegateCommand(() =>
         {
             DBModel.EmployeesDB.Delete(SelectedDepartment);
-            Clear();
+            Departments.Remove(SelectedDepartment);
             SelectedDepartment = default;
+            Mode = WindowMode.Read;
+            OnUpdateCollection?.Execute(null);
         }, () =>  Mode == WindowMode.Read && SelectedDepartment != default);
 
         public ICommand ClearCommand => new DelegateCommand(Clear);
 
         private void Clear()
         {
-            UpdateDepartments();
+            Department = default;
             Mode = WindowMode.Read;
+        }
+
+        private void ClearWithUpdate()
+        {
+            Clear();
+            UpdateDepartments();
         }
 
         private void UpdateDepartments()
@@ -104,6 +119,7 @@ namespace Employees.ViewModels
             Departments = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
             if (selectedId != default)
                 SelectedDepartment = Departments.FirstOrDefault(d => d.Id == selectedId);
+            OnUpdateCollection?.Execute(null);
         }
 
         private bool CanExecuteUpsertCommand(Department department)

@@ -13,7 +13,7 @@ namespace Employees.ViewModels
     {
         private WindowMode _mode;
         private Position _selectedPosition;
-        private Position _appendablePosition;
+        private Position _position;
         private ObservableCollection<Position> _positions
             = new ObservableCollection<Position>(DBModel.PositionsTable.ToList().OrderBy(d => d.Name));
 
@@ -39,14 +39,14 @@ namespace Employees.ViewModels
             }
         }
 
-        public Position AppendablePosition
+        public Position Position
         {
-            get => _appendablePosition;
+            get => _position;
             set
             {
-                if (Equals(_appendablePosition, value)) return;
-                _appendablePosition = value;
-                RaisePropertyChanged(nameof(AppendablePosition));
+                if (Equals(_position, value)) return;
+                _position = value;
+                RaisePropertyChanged(nameof(Position));
             }
         }
 
@@ -61,41 +61,56 @@ namespace Employees.ViewModels
             }
         }
 
+        public ICommand OnUpdateCollection { get; set; }
+
         public ICommand ShowAddForm => new DelegateCommand(() =>
         {
             Mode = WindowMode.Add;
-            AppendablePosition = new Position();
+            Position = new Position();
         }, () =>  Mode == WindowMode.Read);
 
-        public ICommand ShowEditForm => new DelegateCommand(() => Mode = WindowMode.Edit, 
-            () => Mode == WindowMode.Read && SelectedPosition != default);
+        public ICommand ShowEditForm => new DelegateCommand(() =>
+        {
+            Mode = WindowMode.Edit;
+            Position = (Position) SelectedPosition.Clone();
+        }, 
+        () => Mode == WindowMode.Read && SelectedPosition != default);
 
         public ICommand AddCommand => new DelegateCommand(() =>
         {
-            DBModel.Context.Insert(AppendablePosition);
-            Clear();
+            DBModel.Context.Insert(Position);
+            ClearWithUpdate();
             SelectedPosition = Positions.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
-        }, () => CanExecuteUpsertCommand(AppendablePosition));
+        }, () => CanExecuteUpsertCommand(Position));
 
         public ICommand EditCommand => new DelegateCommand(() =>
         {
+            SelectedPosition = (Position) Position.Clone();
             DBModel.EmployeesDB.Update(SelectedPosition);
-            Clear();
+            ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(SelectedPosition));
 
         public ICommand DeleteCommand => new DelegateCommand(() =>
         {
             DBModel.EmployeesDB.Delete(SelectedPosition);
-            Clear();
+            Positions.Remove(SelectedPosition);
             SelectedPosition = default;
+            Mode = WindowMode.Read;
+            OnUpdateCollection?.Execute(null);
         }, () =>  Mode == WindowMode.Read && SelectedPosition != default);
 
         public ICommand ClearCommand => new DelegateCommand(Clear);
 
         private void Clear()
         {
-            UpdatePositions();
+            Position = default;
             Mode = WindowMode.Read;
+        }
+
+        private void ClearWithUpdate()
+        {
+            Clear();
+            UpdatePositions();
         }
 
         private void UpdatePositions()
@@ -104,6 +119,7 @@ namespace Employees.ViewModels
             Positions = new ObservableCollection<Position>(DBModel.PositionsTable.ToList().OrderBy(d => d.Name));
             if (selectedId != default)
                 SelectedPosition = Positions.FirstOrDefault(d => d.Id == selectedId);
+            OnUpdateCollection?.Execute(null);
         }
 
         private bool CanExecuteUpsertCommand(Position position)

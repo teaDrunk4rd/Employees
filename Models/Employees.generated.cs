@@ -1610,7 +1610,7 @@ namespace DataModels
 	}
 
 	[Table(Schema="public", Name="department")]
-	public partial class Department
+	public partial class Department : ICloneable
 	{
 		[Column("id"),   PrimaryKey, Identity] public long   Id   { get; set; } // bigint
 		[Column("name"), NotNull             ] public string Name { get; set; } // text
@@ -1624,10 +1624,12 @@ namespace DataModels
 		public IEnumerable<Employee> Employeefks { get; set; }
 
 		#endregion
+
+		public object Clone() => MemberwiseClone();
 	}
 
 	[Table(Schema="public", Name="employee")]
-	public partial class Employee
+	public partial class Employee : ICloneable
 	{
 		[Column("id"),                     PrimaryKey,  Identity] public long     Id                   { get; set; } // bigint
 		[Column("surname"),                NotNull              ] public string   Surname              { get; set; } // text
@@ -1641,25 +1643,48 @@ namespace DataModels
 		[Column("department_id"),             Nullable          ] public long?    DepartmentId         { get; set; } // bigint
 		[Column("position_id"),               Nullable          ] public long?    PositionId           { get; set; } // bigint
 
+		private Department _department;
+		private Position _position;
+
 		#region Associations
 
 		/// <summary>
 		/// employee_fk_1
 		/// </summary>
 		[Association(ThisKey="DepartmentId", OtherKey="Id", CanBeNull=true, Relationship=Relationship.ManyToOne, KeyName="employee_fk_1", BackReferenceName="Employeefks")]
-		public Department Department { get; set; }
+		public Department Department
+		{
+			get => _department;
+			set
+			{
+				_department = value;
+				if (value != null)
+					DepartmentId = value.Id;
+			}
+		}
 
 		/// <summary>
 		/// employee_fk_2
 		/// </summary>
 		[Association(ThisKey="PositionId", OtherKey="Id", CanBeNull=true, Relationship=Relationship.ManyToOne, KeyName="employee_fk_2", BackReferenceName="Employeefks")]
-		public Position Position { get; set; }
+		public Position Position
+		{
+			get => _position;
+			set
+			{
+				_position = value;
+				if (value != null)
+					PositionId = value.Id;
+			}
+		}
 
 		#endregion
+
+		public object Clone() => MemberwiseClone();
 	}
 
 	[Table(Schema="public", Name="position")]
-	public partial class Position
+	public partial class Position : ICloneable
 	{
 		[Column("id"),   PrimaryKey, Identity] public long   Id   { get; set; } // bigint
 		[Column("name"), NotNull             ] public string Name { get; set; } // text
@@ -1673,6 +1698,8 @@ namespace DataModels
 		public IEnumerable<Employee> Employeefks { get; set; }
 
 		#endregion
+
+		public object Clone() => MemberwiseClone();
 	}
 
 	public static partial class SqlFunctions

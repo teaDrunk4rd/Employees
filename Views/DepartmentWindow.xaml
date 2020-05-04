@@ -3,15 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:Employees.ViewModels"
         xmlns:classes="clr-namespace:Employees.Classes"
         xmlns:converters="clr-namespace:Employees.Classes.Converters"
         mc:Ignorable="d"
         Title="Отделы" Height="400" Width="450" MinWidth="350" MinHeight="350" Background="#fafafa">
-
-    <Window.DataContext>
-        <vm:DepartmentViewModel />
-    </Window.DataContext>
 
     <Window.Resources>
         <converters:WindowModeToVisibilityConverter x:Key="ModeToVisibilityConverter" />
@@ -36,7 +31,7 @@
                 <StackPanel>
                     <Label Content="Наименование" />
                     <Border Style="{StaticResource TextBoxBorder}">
-                        <TextBox DataContext="{Binding AppendableDepartment}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Text="{Binding Department.Name, UpdateSourceTrigger=PropertyChanged}" />
                     </Border>
                 </StackPanel>
                 <StackPanel Style="{StaticResource BottomButtons}">
@@ -52,7 +47,7 @@
                 <StackPanel>
                     <Label Content="Наименование" />
                     <Border Style="{StaticResource TextBoxBorder}">
-                        <TextBox DataContext="{Binding SelectedDepartment}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Text="{Binding Department.Name, UpdateSourceTrigger=PropertyChanged}" />
                     </Border>
                 </StackPanel>
                 <StackPanel Style="{StaticResource BottomButtons}">
