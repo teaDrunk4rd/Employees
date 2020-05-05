@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using DevExpress.Mvvm;
 using Employees.ViewModels.Classes;
 
 namespace Employees.Classes
@@ -16,6 +17,14 @@ namespace Employees.Classes
             viewModel.OnSelection = selectionCommand;
             var view = new W {DataContext = viewModel};
             view.Show();
+        }
+
+        public static void CloseWindow(this ViewModelBase viewModel) // TODO: Исправить, нарушает MVVM
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.DataContext == viewModel) window.Close();
+            }
         }
     }
 }

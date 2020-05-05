@@ -152,6 +152,7 @@ namespace Employees.ViewModels
             {
                 Employee.Position = PositionViewModel.SelectedPosition;
                 RaisePropertyChanged(nameof(Employee));
+                PositionViewModel.CloseWindow();
             }));
         });
         
@@ -161,6 +162,7 @@ namespace Employees.ViewModels
             {
                 Employee.Department = DepartmentViewModel.SelectedDepartment;
                 RaisePropertyChanged(nameof(Employee));
+                DepartmentViewModel.CloseWindow();
             }));
         });
 
