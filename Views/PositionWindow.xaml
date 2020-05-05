@@ -23,9 +23,12 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" Width="*" />
             </DataGrid.Columns>
+            <DataGrid.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding OnSelection}" />
+            </DataGrid.InputBindings>
         </DataGrid>
 
-        <GroupBox Header="Добавление"
+        <GroupBox Grid.Column="0" Header="Добавление"
                   Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Add}}">
             <Grid>
                 <StackPanel>
@@ -41,7 +44,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="Редактирование"
+        <GroupBox Grid.Column="0" Header="Редактирование"
                   Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Edit}}">
             <Grid>
                 <StackPanel>

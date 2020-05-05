@@ -95,6 +95,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Employees.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Classes\LookupViewModel.cs" />
     <Compile Include="ViewModels\DepartmentViewModel.cs" />
     <Compile Include="ViewModels\EmployeeViewModel.cs" />
     <Compile Include="ViewModels\PositionViewModel.cs" />

@@ -5,28 +5,17 @@ using System.Windows.Input;
 using DataModels;
 using Employees.Classes;
 using Employees.Models;
+using Employees.ViewModels.Classes;
 using LinqToDB;
 
 namespace Employees.ViewModels
 {
-    class PositionViewModel : ViewModelBase
+    class PositionViewModel : LookupViewModel
     {
-        private WindowMode _mode;
         private Position _selectedPosition;
         private Position _position;
         private ObservableCollection<Position> _positions
             = new ObservableCollection<Position>(DBModel.PositionsTable.ToList().OrderBy(d => d.Name));
-
-        public WindowMode Mode
-        {
-            get => _mode;
-            set
-            {
-                if (Equals(_mode, value)) return;
-                _mode = value;
-                RaisePropertyChanged(nameof(Mode));
-            }
-        }
 
         public Position SelectedPosition
         {
@@ -60,8 +49,6 @@ namespace Employees.ViewModels
                 RaisePropertyChanged(nameof(Positions));
             }
         }
-
-        public ICommand OnUpdateCollection { get; set; }
 
         public ICommand ShowAddForm => new DelegateCommand(() =>
         {

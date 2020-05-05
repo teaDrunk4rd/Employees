@@ -5,28 +5,17 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Employees.Classes;
+using Employees.ViewModels.Classes;
 using LinqToDB;
 
 namespace Employees.ViewModels
 {
-    class DepartmentViewModel : ViewModelBase
+    class DepartmentViewModel : LookupViewModel
     {
-        private WindowMode _mode;
         private Department _selectedDepartment;
         private Department _department;
         private ObservableCollection<Department> _departments
             = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
-
-        public WindowMode Mode
-        {
-            get => _mode;
-            set
-            {
-                if (Equals(_mode, value)) return;
-                _mode = value;
-                RaisePropertyChanged(nameof(Mode));
-            }
-        }
 
         public Department SelectedDepartment
         {
@@ -60,8 +49,6 @@ namespace Employees.ViewModels
                 RaisePropertyChanged(nameof(Departments));
             }
         }
-
-        public ICommand OnUpdateCollection { get; set; }
 
         public ICommand ShowAddForm => new DelegateCommand(() =>
         {

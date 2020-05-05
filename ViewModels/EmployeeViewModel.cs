@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using DevExpress.Mvvm;
 using Employees.Views;
 using System.Windows.Input;
 using DataModels;
 using Employees.Classes;
 using Employees.Models;
+using Employees.ViewModels.Classes;
 using LinqToDB;
 
 namespace Employees.ViewModels
@@ -27,7 +29,8 @@ namespace Employees.ViewModels
             {
                 if (Equals(_mode, value)) return;
                 _mode = value;
-                RaisePropertyChanged(nameof(Mode));
+                //RaisePropertyChanged(nameof(Mode));
+                RaisePropertiesChanged(nameof(Mode), nameof(FormCommand), nameof(FormName), nameof(FormVisibility));
             }
         }
 
@@ -75,10 +78,18 @@ namespace Employees.ViewModels
                 RaisePropertyChanged(nameof(Employees));
             }
         }
+
+        // TODO: <fix this>
+        public string FormName => Mode == WindowMode.Add ? "Добавление" : "Редактирование";
         
-        public DepartmentViewModel DepartmentViewModel { get; } = new DepartmentViewModel();
+        public ICommand FormCommand => Mode == WindowMode.Add ? AddCommand : EditCommand;
+
+        public Visibility FormVisibility => Mode == WindowMode.Read ? Visibility.Collapsed : Visibility.Visible;
+        // </fix this>
         
         public PositionViewModel PositionViewModel { get; } = new PositionViewModel();
+        
+        public DepartmentViewModel DepartmentViewModel { get; } = new DepartmentViewModel();
 
         public EmployeeViewModel()
         {
@@ -111,8 +122,6 @@ namespace Employees.ViewModels
         public ICommand EditCommand => new DelegateCommand(() =>
         {
             SelectedEmployee = (Employee) Employee.Clone();
-            SelectedEmployee.DepartmentId = SelectedEmployee.Department?.Id;
-            SelectedEmployee.PositionId = SelectedEmployee.Position?.Id;
             DBModel.EmployeesDB.Update(SelectedEmployee);
             ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(SelectedEmployee));
@@ -126,19 +135,33 @@ namespace Employees.ViewModels
         }, () =>  Mode == WindowMode.Read && SelectedEmployee != default);
 
         public ICommand ClearCommand => new DelegateCommand(Clear);
-        
-        public ICommand OpenDepartmentWindow => new DelegateCommand(() =>
-        {
-            DepartmentViewModel.Mode = WindowMode.Read;
-            var departmentWindow = new DepartmentWindow {DataContext = DepartmentViewModel};
-            departmentWindow.Show();
-        });
 
         public ICommand OpenPositionWindow => new DelegateCommand(() =>
         {
-            PositionViewModel.Mode = WindowMode.Read;
-            var positionWindow = new PositionWindow {DataContext = PositionViewModel};
-            positionWindow.Show();
+            PositionViewModel.OpenWindow<PositionViewModel, PositionWindow>();
+        });
+        
+        public ICommand OpenDepartmentWindow => new DelegateCommand(() =>
+        {
+            DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentWindow>();
+        });
+        
+        public ICommand OpenPositionWindowForAdd => new DelegateCommand(() =>
+        {
+            PositionViewModel.OpenWindow<PositionViewModel, PositionWindow>(new DelegateCommand(() =>
+            {
+                Employee.Position = PositionViewModel.SelectedPosition;
+                RaisePropertyChanged(nameof(Employee));
+            }));
+        });
+        
+        public ICommand OpenDepartmentWindowForAdd => new DelegateCommand(() =>
+        {
+            DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentWindow>(new DelegateCommand(() =>
+            {
+                Employee.Department = DepartmentViewModel.SelectedDepartment;
+                RaisePropertyChanged(nameof(Employee));
+            }));
         });
 
         private void Clear()

@@ -1634,9 +1634,9 @@ namespace DataModels
 		[Column("id"),                     PrimaryKey,  Identity] public long     Id                   { get; set; } // bigint
 		[Column("surname"),                NotNull              ] public string   Surname              { get; set; } // text
 		[Column("name"),                   NotNull              ] public string   Name                 { get; set; } // text
-		[Column("patronymic"),             NotNull              ] public string   Patronymic           { get; set; } // text
+		[Column("patronymic"),                Nullable          ] public string   Patronymic           { get; set; } // text
 		[Column("phone"),                  NotNull              ] public string   Phone                { get; set; } // text
-		[Column("address"),                   Nullable          ] public string   Address              { get; set; } // text
+		[Column("address"),                NotNull              ] public string   Address              { get; set; } // text
 		[Column("passport_number_series"), NotNull              ] public string   PassportNumberSeries { get; set; } // text
 		[Column("passport_info_whom"),     NotNull              ] public string   PassportInfoWhom     { get; set; } // text
 		[Column("passport_info_when"),     NotNull              ] public DateTime PassportInfoWhen     { get; set; } // timestamp (6) without time zone
