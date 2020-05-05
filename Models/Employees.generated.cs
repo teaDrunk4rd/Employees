@@ -15,7 +15,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.NetworkInformation;
 using System.Reflection;
-
 using LinqToDB;
 using LinqToDB.Common;
 using LinqToDB.Data;
@@ -1610,7 +1609,7 @@ namespace DataModels
 	}
 
 	[Table(Schema="public", Name="department")]
-	public partial class Department : ICloneable
+	public partial class Department
 	{
 		[Column("id"),   PrimaryKey, Identity] public long   Id   { get; set; } // bigint
 		[Column("name"), NotNull             ] public string Name { get; set; } // text
@@ -1624,12 +1623,10 @@ namespace DataModels
 		public IEnumerable<Employee> Employeefks { get; set; }
 
 		#endregion
-
-		public object Clone() => MemberwiseClone();
 	}
 
 	[Table(Schema="public", Name="employee")]
-	public partial class Employee : ICloneable
+	public partial class Employee
 	{
 		[Column("id"),                     PrimaryKey,  Identity] public long     Id                   { get; set; } // bigint
 		[Column("surname"),                NotNull              ] public string   Surname              { get; set; } // text
@@ -1679,12 +1676,10 @@ namespace DataModels
 		}
 
 		#endregion
-
-		public object Clone() => MemberwiseClone();
 	}
 
 	[Table(Schema="public", Name="position")]
-	public partial class Position : ICloneable
+	public partial class Position
 	{
 		[Column("id"),   PrimaryKey, Identity] public long   Id   { get; set; } // bigint
 		[Column("name"), NotNull             ] public string Name { get; set; } // text
@@ -1698,8 +1693,6 @@ namespace DataModels
 		public IEnumerable<Employee> Employeefks { get; set; }
 
 		#endregion
-
-		public object Clone() => MemberwiseClone();
 	}
 
 	public static partial class SqlFunctions
