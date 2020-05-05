@@ -1,4 +1,5 @@
-﻿using DataModels;
+﻿using System.Collections.Generic;
+using DataModels;
 using DevExpress.Mvvm;
 using Employees.Models;
 using System.Collections.ObjectModel;
@@ -14,8 +15,8 @@ namespace Employees.ViewModels
     {
         private Department _selectedDepartment;
         private Department _department;
-        private ObservableCollection<Department> _departments
-            = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
+        private List<Department> _departments;
+        private ObservableCollection<Department> _filteredDepartments;
 
         public Department SelectedDepartment
         {
@@ -39,7 +40,7 @@ namespace Employees.ViewModels
             }
         }
 
-        public ObservableCollection<Department> Departments
+        public List<Department> Departments
         {
             get => _departments;
             set
@@ -48,6 +49,24 @@ namespace Employees.ViewModels
                 _departments = value;
                 RaisePropertyChanged(nameof(Departments));
             }
+        }
+
+        public ObservableCollection<Department> FilteredDepartments
+        {
+            get => _filteredDepartments;
+            set
+            {
+                if (Equals(_filteredDepartments, value)) return;
+                _filteredDepartments = value;
+                RaisePropertyChanged(nameof(FilteredDepartments));
+            }
+        }
+
+        public DepartmentViewModel()
+        {
+            Departments = DBModel.DepartmentsTable.ToList();
+            FilteredDepartments =
+                new ObservableCollection<Department>(Departments.Where(d => d.Search(Search)).OrderBy(d => d.Name));
         }
 
         public ICommand ShowAddForm => new DelegateCommand(() =>
@@ -67,7 +86,7 @@ namespace Employees.ViewModels
         {
             DBModel.Context.Insert(Department);
             ClearWithUpdate();
-            SelectedDepartment = Departments.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
+            SelectedDepartment = FilteredDepartments.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
         }, () => CanExecuteUpsertCommand(Department));
 
         public ICommand EditCommand => new DelegateCommand(() =>
@@ -81,8 +100,9 @@ namespace Employees.ViewModels
         {
             DBModel.EmployeesDB.Delete(SelectedDepartment);
             Departments.Remove(SelectedDepartment);
+            FilteredDepartments.Remove(SelectedDepartment);
             SelectedDepartment = default;
-            Mode = WindowMode.Read;
+            Clear();
             OnUpdateCollection?.Execute(null);
         }, () =>  Mode == WindowMode.Read && SelectedDepartment != default);
 
@@ -97,20 +117,24 @@ namespace Employees.ViewModels
         private void ClearWithUpdate()
         {
             Clear();
+            Departments = DBModel.DepartmentsTable.ToList();
             UpdateDepartments();
+            OnUpdateCollection?.Execute(null);
         }
 
         private void UpdateDepartments()
         {
             var selectedId = SelectedDepartment?.Id;
-            Departments = new ObservableCollection<Department>(DBModel.DepartmentsTable.ToList().OrderBy(d => d.Name));
+            FilteredDepartments =
+                new ObservableCollection<Department>(Departments.Where(d => d.Search(Search)).OrderBy(d => d.Name));
             if (selectedId != default)
-                SelectedDepartment = Departments.FirstOrDefault(d => d.Id == selectedId);
-            OnUpdateCollection?.Execute(null);
+                SelectedDepartment = FilteredDepartments.FirstOrDefault(d => d.Id == selectedId);
         }
 
         private bool CanExecuteUpsertCommand(Department department)
             => department != null && !department.Name.IsEmpty() &&
                !Departments.Any(d => d.Name == department.Name && d.Id != department.Id);
+
+        protected override void RaiseSearchChanged() => UpdateDepartments();
     }
 }

@@ -40,21 +40,24 @@
         </r:Ribbon>
 
         <Grid Grid.Row="1" Grid.Column="0">
-            <DataGrid ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployeeModel}"
-                      Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Read}}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ФИО" Binding="{Binding Path=FullName}" />
-                    <DataGridTextColumn Header="Должность" Binding="{Binding Path=Position.Name}" />
-                    <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Department.Name}" />
-                    <DataGridTextColumn Header="Номер" Binding="{Binding Path=Phone}" />
-                    <DataGridTextColumn Header="Адрес" Binding="{Binding Path=Address}" />
-                    <DataGridTextColumn Header="Серия номер паспорта" Binding="{Binding Path=PassportNumberSeries}" />
-                    <DataGridTextColumn Header="Паспорт выдан" Binding="{Binding Path=PassportInfo}" />
-                </DataGrid.Columns>
-                <DataGrid.InputBindings>
-                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ShowEditForm}" />
-                </DataGrid.InputBindings>
-            </DataGrid>
+            <DockPanel Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Read}}">
+                <TextBox DockPanel.Dock="Top" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}" Margin="10 10 10 0" />
+            
+                <DataGrid ItemsSource="{Binding FilteredEmployees}" SelectedItem="{Binding SelectedEmployeeModel}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ФИО" Binding="{Binding Path=FullName}" />
+                        <DataGridTextColumn Header="Должность" Binding="{Binding Path=Position.Name}" />
+                        <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Department.Name}" />
+                        <DataGridTextColumn Header="Номер" Binding="{Binding Path=Phone}" />
+                        <DataGridTextColumn Header="Адрес" Binding="{Binding Path=Address}" />
+                        <DataGridTextColumn Header="Серия номер паспорта" Binding="{Binding Path=PassportNumberSeries}" />
+                        <DataGridTextColumn Header="Паспорт выдан" Binding="{Binding Path=PassportInfo}" />
+                    </DataGrid.Columns>
+                    <DataGrid.InputBindings>
+                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ShowEditForm}" />
+                    </DataGrid.InputBindings>
+                </DataGrid>
+            </DockPanel>
 
             <GroupBox Header="{Binding FormName}"
                       Visibility="{Binding FormVisibility}">
@@ -68,21 +71,13 @@
 
                     <StackPanel Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}">
                         <Label Content="Фамилия" />
-                        <Border Style="{StaticResource TextBoxBorder}">
-                            <TextBox Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}" />
-                        </Border>
+                        <TextBox Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}" />
                         <Label Content="Имя" />
-                        <Border Style="{StaticResource TextBoxBorder}">
-                            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
-                        </Border>
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
                         <Label Content="Отчество" />
-                        <Border Style="{StaticResource TextBoxBorder}">
-                            <TextBox Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}" />
-                        </Border>
+                        <TextBox Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}" />
                         <Label Content="Номер" />
-                        <Border Style="{StaticResource TextBoxBorder}">
-                            <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" /> <!-- format -->
-                        </Border>
+                        <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" /> <!-- format -->
                     </StackPanel>
                     
                     <StackPanel Grid.Column="1" Margin="0 0 10 0">
@@ -92,7 +87,7 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="30" />
                             </Grid.ColumnDefinitions>
-                            <Border Style="{StaticResource TextBoxBorder}"> <!-- кнопка пропадает, съедает низ букв -->
+                            <Border Style="{StaticResource BasicBorder}"> <!-- кнопка пропадает, съедает низ букв -->
                                 <ComboBox DisplayMemberPath="Name" Height="25" Margin="5 1"
                                           ItemsSource="{Binding PositionViewModel.Positions}"
                                           SelectedItem="{Binding Employee.Position}" />
@@ -105,7 +100,7 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="30" />
                             </Grid.ColumnDefinitions>
-                            <Border Style="{StaticResource TextBoxBorder}"> <!-- кнопка пропадает, съедает низ букв -->
+                            <Border Style="{StaticResource BasicBorder}"> <!-- кнопка пропадает, съедает низ букв -->
                                 <ComboBox DisplayMemberPath="Name" Height="25" Margin="5 1" 
                                     ItemsSource="{Binding DepartmentViewModel.Departments}"
                                     SelectedItem="{Binding Employee.Department}" />
@@ -116,9 +111,7 @@
                     
                     <StackPanel Grid.Column="2" Grid.ColumnSpan="2" DataContext="{Binding Employee}">
                         <Label Content="Адрес регистрации" />
-                        <Border Style="{StaticResource TextBoxBorder}">
-                            <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
-                        </Border>
+                        <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -127,22 +120,18 @@
 
                             <StackPanel Grid.Column="0" Margin="0 0 10 0">
                                 <Label Content="Серия номер паспорта" />
-                                 <Border Style="{StaticResource TextBoxBorder}"> <!--extensions:TextBoxRegex.Regex="^([0-9]{4}\s{1}[0-9]{6})?$" -->
-                                    <TextBox Text="{Binding PassportNumberSeries, UpdateSourceTrigger=PropertyChanged}" />
-                                </Border>
+                                <TextBox Text="{Binding PassportNumberSeries, UpdateSourceTrigger=PropertyChanged}" /> <!--extensions:TextBoxRegex.Regex="^([0-9]{4}\s{1}[0-9]{6})?$" -->
                             </StackPanel>
 
                             <StackPanel Grid.Column="1">
                                 <Label Content="Дата выдачи паспорта" />
-                                <Border Style="{StaticResource TextBoxBorder}">
+                                <Border Style="{StaticResource BasicBorder}">
                                     <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding PassportInfoWhen}" Margin="5 1" /> <!-- кнопка пропадает -->
                                 </Border>
                             </StackPanel>
                         </Grid>
                         <Label Content="Кем выдан паспорт" />
-                        <Border Style="{StaticResource TextBoxBorder}">
-                            <TextBox Text="{Binding PassportInfoWhom, UpdateSourceTrigger=PropertyChanged}" />
-                        </Border>
+                        <TextBox Text="{Binding PassportInfoWhom, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                     
                     <StackPanel Grid.Column="3" Style="{StaticResource BottomButtons}">
@@ -153,7 +142,7 @@
             </GroupBox>
         </Grid>
 
-        <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 15">
+        <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 50">
             <Button Margin="4 0 4 4" Content="Добавить" Command="{Binding ShowAddForm}" />
             <Button Margin="4" Padding="0" Content="Редактировать" Command="{Binding ShowEditForm}" />
             <Button Visibility="Hidden" />

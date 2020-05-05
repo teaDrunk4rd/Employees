@@ -86,7 +86,6 @@
     </Compile>
     <Compile Include="Classes\Converters\WindowModeToVisibilityConverter.cs" />
     <Compile Include="Classes\Extensions.cs" />
-    <Compile Include="Classes\Mode.cs" />
     <Compile Include="Classes\WindowMode.cs" />
     <Compile Include="Models\DBModel.cs" />
     <Compile Include="Models\EmployeeModel.cs" />
@@ -95,10 +94,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Employees.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ISearchable.cs" />
     <Compile Include="Models\ModelsAddition\Department.cs" />
     <Compile Include="Models\ModelsAddition\Employee.cs" />
     <Compile Include="Models\ModelsAddition\Position.cs" />
     <Compile Include="ViewModels\Classes\LookupViewModel.cs" />
+    <Compile Include="ViewModels\Classes\SearchableViewModel.cs" />
     <Compile Include="ViewModels\DepartmentViewModel.cs" />
     <Compile Include="ViewModels\EmployeeViewModel.cs" />
     <Compile Include="ViewModels\PositionViewModel.cs" />
@@ -158,6 +159,7 @@
   <ItemGroup>
     <Resource Include="img\departments.png" />
     <Resource Include="img\positions.png" />
+    <Resource Include="img\magnifier.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Styles.xaml" />

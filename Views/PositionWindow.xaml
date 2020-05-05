@@ -18,24 +18,26 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
 
-        <DataGrid ItemsSource="{Binding Positions}" SelectedItem="{Binding SelectedPosition}"
-                  Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Read}}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" Width="*" />
-            </DataGrid.Columns>
-            <DataGrid.InputBindings>
-                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding OnSelection}" />
-            </DataGrid.InputBindings>
-        </DataGrid>
+        <DockPanel Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Read}}">
+            <TextBox DockPanel.Dock="Top" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}" Margin="10 10 10 0" />
+            
+            <DataGrid ItemsSource="{Binding FilteredPositions}" SelectedItem="{Binding SelectedPosition}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" Width="*" />
+                </DataGrid.Columns>
+                <DataGrid.InputBindings>
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding OnSelection}" />
+                </DataGrid.InputBindings>
+            </DataGrid>
+        </DockPanel>
+        
 
         <GroupBox Grid.Column="0" Header="Добавление"
                   Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Add}}">
             <Grid>
                 <StackPanel>
                     <Label Content="Наименование" />
-                    <Border Style="{StaticResource TextBoxBorder}">
-                        <TextBox Text="{Binding Position.Name, UpdateSourceTrigger=PropertyChanged}" />
-                    </Border>
+                    <TextBox Text="{Binding Position.Name, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Style="{StaticResource BottomButtons}">
                     <Button Margin="4 0" Command="{Binding AddCommand}" Content="ОК" />
@@ -49,9 +51,7 @@
             <Grid>
                 <StackPanel>
                     <Label Content="Наименование" />
-                    <Border Style="{StaticResource TextBoxBorder}">
-                        <TextBox Text="{Binding Position.Name, UpdateSourceTrigger=PropertyChanged}" />
-                    </Border>
+                    <TextBox Text="{Binding Position.Name, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Style="{StaticResource BottomButtons}">
                     <Button Margin="4 0" Command="{Binding EditCommand}" Content="ОК" />
@@ -60,7 +60,7 @@
             </Grid>
         </GroupBox>
 
-        <StackPanel Grid.Column="1" Margin="0 15">
+        <StackPanel Grid.Column="1" Margin="0 50">
             <Button Margin="4 0 4 4" Content="Добавить" Command="{Binding ShowAddForm}" />
             <Button Margin="4" Padding="0" Content="Редактировать" Command="{Binding ShowEditForm}" />
             <Button Visibility="Hidden" />

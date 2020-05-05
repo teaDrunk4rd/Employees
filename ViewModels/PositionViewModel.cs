@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using DevExpress.Mvvm;
 using System.Windows.Input;
@@ -14,8 +15,8 @@ namespace Employees.ViewModels
     {
         private Position _selectedPosition;
         private Position _position;
-        private ObservableCollection<Position> _positions
-            = new ObservableCollection<Position>(DBModel.PositionsTable.ToList().OrderBy(d => d.Name));
+        private List<Position> _positions;
+        private ObservableCollection<Position> _filteredPositions;
 
         public Position SelectedPosition
         {
@@ -39,7 +40,7 @@ namespace Employees.ViewModels
             }
         }
 
-        public ObservableCollection<Position> Positions
+        public List<Position> Positions
         {
             get => _positions;
             set
@@ -48,6 +49,24 @@ namespace Employees.ViewModels
                 _positions = value;
                 RaisePropertyChanged(nameof(Positions));
             }
+        }
+
+        public ObservableCollection<Position> FilteredPositions
+        {
+            get => _filteredPositions;
+            set
+            {
+                if (Equals(_filteredPositions, value)) return;
+                _filteredPositions = value;
+                RaisePropertyChanged(nameof(FilteredPositions));
+            }
+        }
+
+        public PositionViewModel()
+        {
+            Positions = DBModel.PositionsTable.ToList();
+            FilteredPositions =
+                new ObservableCollection<Position>(Positions.Where(p => p.Search(Search)).OrderBy(p => p.Name));
         }
 
         public ICommand ShowAddForm => new DelegateCommand(() =>
@@ -67,7 +86,7 @@ namespace Employees.ViewModels
         {
             DBModel.Context.Insert(Position);
             ClearWithUpdate();
-            SelectedPosition = Positions.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
+            SelectedPosition = FilteredPositions.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
         }, () => CanExecuteUpsertCommand(Position));
 
         public ICommand EditCommand => new DelegateCommand(() =>
@@ -81,8 +100,9 @@ namespace Employees.ViewModels
         {
             DBModel.EmployeesDB.Delete(SelectedPosition);
             Positions.Remove(SelectedPosition);
+            FilteredPositions.Remove(SelectedPosition);
             SelectedPosition = default;
-            Mode = WindowMode.Read;
+            Clear();
             OnUpdateCollection?.Execute(null);
         }, () =>  Mode == WindowMode.Read && SelectedPosition != default);
 
@@ -97,20 +117,24 @@ namespace Employees.ViewModels
         private void ClearWithUpdate()
         {
             Clear();
+            Positions = DBModel.PositionsTable.ToList();
             UpdatePositions();
+            OnUpdateCollection?.Execute(null);
         }
 
         private void UpdatePositions()
         {
             var selectedId = SelectedPosition?.Id;
-            Positions = new ObservableCollection<Position>(DBModel.PositionsTable.ToList().OrderBy(d => d.Name));
+            FilteredPositions = 
+                new ObservableCollection<Position>(Positions.Where(d => d.Search(Search)).OrderBy(d => d.Name));
             if (selectedId != default)
-                SelectedPosition = Positions.FirstOrDefault(d => d.Id == selectedId);
-            OnUpdateCollection?.Execute(null);
+                SelectedPosition = FilteredPositions.FirstOrDefault(d => d.Id == selectedId);
         }
 
         private bool CanExecuteUpsertCommand(Position position)
             => position != null && !position.Name.IsEmpty() &&
                !Positions.Any(d => d.Name == position.Name && d.Id != position.Id);
+
+        protected override void RaiseSearchChanged() => UpdatePositions();
     }
 }
