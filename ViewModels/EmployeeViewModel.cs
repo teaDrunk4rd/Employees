@@ -177,7 +177,7 @@ namespace Employees.ViewModels
                 Employee.Position = PositionViewModel.SelectedPosition;
                 RaisePropertyChanged(nameof(Employee));
                 PositionViewModel.CloseWindow();
-            }));
+            }), PositionViewModel.ShowAddForm);
         });
         
         public ICommand OpenDepartmentWindowForAdd => new DelegateCommand(() =>
@@ -189,7 +189,7 @@ namespace Employees.ViewModels
                 Employee.Department = DepartmentViewModel.SelectedDepartment;
                 RaisePropertyChanged(nameof(Employee));
                 DepartmentViewModel.CloseWindow();
-            }));
+            }), DepartmentViewModel.ShowAddForm);
         });
 
         private void Clear()

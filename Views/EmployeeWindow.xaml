@@ -39,7 +39,7 @@
                 
                 <RibbonGroup Header="Поиск">
                     <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}"
-                             DockPanel.Dock="Top" Margin="10 10 10 0" Width="250" />
+                             DockPanel.Dock="Top" Margin="10 15" Width="250" />
                 </RibbonGroup>
             </RibbonTab>
         </r:Ribbon>

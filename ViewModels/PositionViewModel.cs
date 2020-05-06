@@ -87,6 +87,7 @@ namespace Employees.ViewModels
             DBModel.Context.Insert(Position);
             ClearWithUpdate();
             SelectedPosition = FilteredPositions.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
+            OnSelection?.Execute(this);
         }, () => CanExecuteUpsertCommand(Position));
 
         public ICommand EditCommand => new DelegateCommand(() =>
@@ -106,7 +107,12 @@ namespace Employees.ViewModels
             OnUpdateCollection?.Execute(null);
         }, () =>  Mode == WindowMode.Read && SelectedPosition != default);
 
-        public ICommand ClearCommand => new DelegateCommand(Clear);
+        public ICommand ClearCommand => new DelegateCommand(() =>
+        {
+            Clear();
+            if (OnSelection != default)
+                OnSelection = default;
+        });
 
         private void Clear()
         {
