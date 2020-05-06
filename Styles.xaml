@@ -40,6 +40,21 @@
         <Setter Property="CanUserAddRows" Value="False" />
         <Setter Property="IsReadOnly" Value="True" />
     </Style>
+    
+    
+    <Style TargetType="DataGrid" x:Key="EmptyDataMessage" BasedOn="{StaticResource {x:Type DataGrid}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Self}}" Value="false">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGrid">
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2 15" Text="Записи отсутствуют" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 
 
     <Style TargetType="StackPanel" x:Key="BottomButtons">

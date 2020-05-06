@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DataModels;
 
 namespace Employees.Models
@@ -19,10 +20,10 @@ namespace Employees.Models
             if (employee == null) return;
 
             Id = employee.Id;
-            FullName = $"{employee.Surname} {employee.Name} {employee.Patronymic}";
+            FullName = employee.FullName();
             Phone = employee.Phone;
             Address = employee.Address;
-            PassportNumberSeries = employee.PassportNumberSeries;
+            PassportNumberSeries = $"{string.Concat(employee.PassportNumberSeries.Take(4))} {string.Concat(employee.PassportNumberSeries.Skip(4))}";
             PassportInfo = $"{employee.PassportInfoWhen:dd.MM.yyyy} {employee.PassportInfoWhom}";
             Department = employee.Department;
             Position = employee.Position;

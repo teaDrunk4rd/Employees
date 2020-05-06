@@ -19,9 +19,11 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Read}}">
-            <TextBox DockPanel.Dock="Top" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}" Margin="10 10 10 0" />
+            <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}" 
+                     DockPanel.Dock="Top" Margin="10 10 10 0" />
             
-            <DataGrid ItemsSource="{Binding FilteredPositions}" SelectedItem="{Binding SelectedPosition}">
+            <DataGrid ItemsSource="{Binding FilteredPositions}" SelectedItem="{Binding SelectedPosition}"
+                      Style="{StaticResource EmptyDataMessage}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" Width="*" />
                 </DataGrid.Columns>

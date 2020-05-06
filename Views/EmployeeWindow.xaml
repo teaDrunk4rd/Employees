@@ -29,21 +29,28 @@
         </Grid.ColumnDefinitions>
 
         <r:Ribbon Margin="0 -52 0 0" MouseOverBorderBrush="SkyBlue" Grid.ColumnSpan="2">
-            <RibbonTab Header="Справочники" Height="80" Margin="0">
+            <RibbonTab Header="Основная вкладка" Height="80" Margin="0">
                 <RibbonGroup Header="Справочники">
                     <RibbonButton Label="Должности" LargeImageSource="../img/positions.png" Command="{Binding OpenPositionWindow}"
                             MouseOverBackground="SkyBlue" PressedBorderBrush="SkyBlue" PressedBackground="SkyBlue" MouseOverBorderBrush="SkyBlue" />
                     <RibbonButton Label="Отделы" LargeImageSource="../img/departments.png" Command="{Binding OpenDepartmentWindow}" 
                             MouseOverBackground="SkyBlue" PressedBorderBrush="SkyBlue" PressedBackground="SkyBlue" MouseOverBorderBrush="SkyBlue" />
                 </RibbonGroup>
+                
+                <RibbonGroup Header="Поиск">
+                    <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}"
+                             DockPanel.Dock="Top" Margin="10 10 10 0" Width="250" />
+                </RibbonGroup>
             </RibbonTab>
         </r:Ribbon>
 
         <Grid Grid.Row="1" Grid.Column="0">
             <DockPanel Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Read}}">
-                <TextBox DockPanel.Dock="Top" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}" Margin="10 10 10 0" />
+                <!-- <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}" -->
+                <!--          DockPanel.Dock="Top" Margin="10 10 10 0" /> -->
             
-                <DataGrid ItemsSource="{Binding FilteredEmployees}" SelectedItem="{Binding SelectedEmployeeModel}">
+                <DataGrid ItemsSource="{Binding FilteredEmployees}" SelectedItem="{Binding SelectedEmployeeModel}"
+                          Style="{StaticResource EmptyDataMessage}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ФИО" Binding="{Binding Path=FullName}" />
                         <DataGridTextColumn Header="Должность" Binding="{Binding Path=Position.Name}" />
