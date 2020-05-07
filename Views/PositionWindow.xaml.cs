@@ -22,6 +22,7 @@ namespace Employees.Views
         public PositionWindow()
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
     }
 }

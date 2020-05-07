@@ -4,6 +4,7 @@ using DevExpress.Mvvm;
 using Employees.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Employees.Classes;
 using Employees.ViewModels.Classes;
@@ -99,6 +100,8 @@ namespace Employees.ViewModels
 
         public ICommand DeleteCommand => new DelegateCommand(() =>
         {
+            if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
+                return;
             DBModel.EmployeesDB.Delete(SelectedDepartment);
             Departments.Remove(SelectedDepartment);
             FilteredDepartments.Remove(SelectedDepartment);

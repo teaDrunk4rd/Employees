@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using DevExpress.Mvvm;
 using System.Windows.Input;
 using DataModels;
@@ -99,6 +100,8 @@ namespace Employees.ViewModels
 
         public ICommand DeleteCommand => new DelegateCommand(() =>
         {
+            if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
+                return;
             DBModel.EmployeesDB.Delete(SelectedPosition);
             Positions.Remove(SelectedPosition);
             FilteredPositions.Remove(SelectedPosition);

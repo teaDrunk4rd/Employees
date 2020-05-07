@@ -145,6 +145,8 @@ namespace Employees.ViewModels
 
         public ICommand DeleteCommand => new DelegateCommand(() =>
         {
+            if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
+                return;
             DBModel.EmployeesDB.Delete(SelectedEmployee);
             Employees.Remove(SelectedEmployee);
             FilteredEmployees.Remove(SelectedEmployeeModel);
