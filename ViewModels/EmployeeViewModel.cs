@@ -16,23 +16,10 @@ namespace Employees.ViewModels
 {
     public class EmployeeViewModel : LookupViewModel
     {
-        private WindowMode _mode;
         private Employee _selectedEmployee;
         private Employee _employee;
         private List<Employee> _employees;
         private ObservableCollection<EmployeeModel> _filteredEmployees;
-
-        public new WindowMode Mode
-        {
-            get => _mode;
-            set
-            {
-                if (Equals(_mode, value)) return;
-                _mode = value;
-                //RaisePropertyChanged(nameof(Mode));
-                RaisePropertiesChanged(nameof(Mode), nameof(FormCommand), nameof(FormName), nameof(FormVisibility));
-            }
-        }
 
         public Employee SelectedEmployee
         {
@@ -92,14 +79,6 @@ namespace Employees.ViewModels
         
         public MainViewModel Parent { get; set; }
 
-        // TODO: <fix this>
-        public string FormName => Mode == WindowMode.Add ? "Добавление" : "Редактирование";
-        
-        public ICommand FormCommand => Mode == WindowMode.Add ? AddCommand : EditCommand;
-
-        public Visibility FormVisibility => Mode == WindowMode.Read ? Visibility.Collapsed : Visibility.Visible;
-        // </fix this>
-
         public EmployeeViewModel(MainViewModel parent)
         {
             Parent = parent;
@@ -136,14 +115,14 @@ namespace Employees.ViewModels
         }, 
         () => Mode == WindowMode.Read && SelectedEmployee != default);
 
-        public ICommand AddCommand => new DelegateCommand(() =>
+        public override ICommand AddCommand => new DelegateCommand(() =>
         {
             DBModel.Context.Insert(Employee);
             ClearWithUpdate();
             SelectedEmployeeModel = FilteredEmployees.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
         }, () => CanExecuteUpsertCommand(Employee));
 
-        public ICommand EditCommand => new DelegateCommand(() =>
+        public override ICommand EditCommand => new DelegateCommand(() =>
         {
             SelectedEmployee = (Employee) Employee.Clone();
             SelectedEmployee.PassportNumberSeries = SelectedEmployee.PassportNumberSeries.Replace(" ", string.Empty); // TODO: использовать конвертер
@@ -151,7 +130,7 @@ namespace Employees.ViewModels
             ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(SelectedEmployee));
 
-        public ICommand DeleteCommand => new DelegateCommand(() =>
+        public override ICommand DeleteCommand => new DelegateCommand(() =>
         {
             if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
                 return;

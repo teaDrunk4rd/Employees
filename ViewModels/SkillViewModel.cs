@@ -83,7 +83,7 @@ namespace Employees.ViewModels
         }, 
         () => Mode == WindowMode.Read && SelectedSkill != default);
 
-        public ICommand AddCommand => new DelegateCommand(() =>
+        public override ICommand AddCommand => new DelegateCommand(() =>
         {
             DBModel.Context.Insert(Skill);
             ClearWithUpdate();
@@ -91,14 +91,14 @@ namespace Employees.ViewModels
             OnSelection?.Execute(this);
         }, () => CanExecuteUpsertCommand(Skill));
 
-        public ICommand EditCommand => new DelegateCommand(() =>
+        public override ICommand EditCommand => new DelegateCommand(() =>
         {
             SelectedSkill = (Skill) Skill.Clone();
             DBModel.EmployeesDB.Update(SelectedSkill);
             ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(Skill));
 
-        public ICommand DeleteCommand => new DelegateCommand(() =>
+        public override ICommand DeleteCommand => new DelegateCommand(() =>
         {
             if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
                 return;

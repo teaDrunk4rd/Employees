@@ -83,7 +83,7 @@ namespace Employees.ViewModels
         }, 
         () => Mode == WindowMode.Read && SelectedPosition != default);
 
-        public ICommand AddCommand => new DelegateCommand(() =>
+        public override ICommand AddCommand => new DelegateCommand(() =>
         {
             DBModel.Context.Insert(Position);
             ClearWithUpdate();
@@ -91,14 +91,14 @@ namespace Employees.ViewModels
             OnSelection?.Execute(this);
         }, () => CanExecuteUpsertCommand(Position));
 
-        public ICommand EditCommand => new DelegateCommand(() =>
+        public override ICommand EditCommand => new DelegateCommand(() =>
         {
             SelectedPosition = (Position) Position.Clone();
             DBModel.EmployeesDB.Update(SelectedPosition);
             ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(Position));
 
-        public ICommand DeleteCommand => new DelegateCommand(() =>
+        public override ICommand DeleteCommand => new DelegateCommand(() =>
         {
             if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
                 return;

@@ -115,7 +115,7 @@
                 
                 <StackPanel Grid.Column="3" Style="{StaticResource BottomButtons}">
                     <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
-                    <Button Margin="4 0" Command="{Binding FormCommand}" Content="ОК" />
+                    <Button Margin="4 0" Command="{Binding OkCommand}" Content="ОК" />
                 </StackPanel>
             </Grid>
         </GroupBox>

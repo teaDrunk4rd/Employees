@@ -34,8 +34,7 @@
         </DockPanel>
         
 
-        <GroupBox Grid.Column="0" Header="Добавление"
-                  Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Add}}">
+        <GroupBox Grid.Column="0" Header="{Binding FormName}" Visibility="{Binding FormVisibility}">
             <Grid>
                 <StackPanel>
                     <Label Content="Наименование" />
@@ -43,21 +42,7 @@
                 </StackPanel>
                 <StackPanel Style="{StaticResource BottomButtons}">
                     <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
-                    <Button Margin="4 0" Command="{Binding AddCommand}" Content="ОК" />
-                </StackPanel>
-            </Grid>
-        </GroupBox>
-
-        <GroupBox Grid.Column="0" Header="Редактирование"
-                  Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Edit}}">
-            <Grid>
-                <StackPanel>
-                    <Label Content="Наименование" />
-                    <TextBox Text="{Binding Position.Name, UpdateSourceTrigger=PropertyChanged}" />
-                </StackPanel>
-                <StackPanel Style="{StaticResource BottomButtons}">
-                    <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
-                    <Button Margin="4 0" Command="{Binding EditCommand}" Content="ОК" />
+                    <Button Margin="4 0" Command="{Binding OkCommand}" Content="ОК" />
                 </StackPanel>
             </Grid>
         </GroupBox>
