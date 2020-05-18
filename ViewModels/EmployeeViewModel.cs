@@ -14,7 +14,7 @@ using LinqToDB;
 
 namespace Employees.ViewModels
 {
-    class EmployeeViewModel : SearchableViewModel
+    public class EmployeeViewModel : LookupViewModel
     {
         private WindowMode _mode;
         private Employee _selectedEmployee;
@@ -89,6 +89,8 @@ namespace Employees.ViewModels
                 RaisePropertyChanged(nameof(FilteredEmployees));
             }
         }
+        
+        public MainViewModel Parent { get; set; }
 
         // TODO: <fix this>
         public string FormName => Mode == WindowMode.Add ? "Добавление" : "Редактирование";
@@ -97,19 +99,16 @@ namespace Employees.ViewModels
 
         public Visibility FormVisibility => Mode == WindowMode.Read ? Visibility.Collapsed : Visibility.Visible;
         // </fix this>
-        
-        public PositionViewModel PositionViewModel { get; } = new PositionViewModel();
-        
-        public DepartmentViewModel DepartmentViewModel { get; } = new DepartmentViewModel();
 
-        public EmployeeViewModel()
+        public EmployeeViewModel(MainViewModel parent)
         {
-            PositionViewModel.OnUpdateCollection = new DelegateCommand(() =>
+            Parent = parent;
+            Parent.PositionViewModel.OnUpdateCollection = new DelegateCommand(() =>
             {
                 Employees = DBModel.EmployeesTable.ToList();
                 UpdateEverything();
             });
-            DepartmentViewModel.OnUpdateCollection = new DelegateCommand(() =>
+            Parent.DepartmentViewModel.OnUpdateCollection = new DelegateCommand(() =>
             {
                 Employees = DBModel.EmployeesTable.ToList();
                 UpdateEverything();
@@ -164,43 +163,29 @@ namespace Employees.ViewModels
         }, () =>  Mode == WindowMode.Read && SelectedEmployee != default);
 
         public ICommand ClearCommand => new DelegateCommand(Clear);
-
-        public ICommand OpenPositionWindow => new DelegateCommand(() =>
-        {
-            PositionViewModel.SelectedPosition = default;
-            PositionViewModel.Search = default;
-            PositionViewModel.OpenWindow<PositionViewModel, PositionWindow>();
-        });
-        
-        public ICommand OpenDepartmentWindow => new DelegateCommand(() =>
-        {
-            DepartmentViewModel.SelectedDepartment = default;
-            DepartmentViewModel.Search = default;
-            DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentWindow>();
-        });
         
         public ICommand OpenPositionWindowForAdd => new DelegateCommand(() =>
         {
-            PositionViewModel.SelectedPosition = default;
-            PositionViewModel.Search = default;
-            PositionViewModel.OpenWindow<PositionViewModel, PositionWindow>(new DelegateCommand(() =>
+            Parent.PositionViewModel.SelectedPosition = default;
+            Parent.PositionViewModel.Search = default;
+            Parent.PositionViewModel.OpenWindow<PositionViewModel, PositionView>(new DelegateCommand(() =>
             {
-                Employee.Position = PositionViewModel.SelectedPosition;
+                Employee.Position = Parent.PositionViewModel.SelectedPosition;
                 RaisePropertyChanged(nameof(Employee));
-                PositionViewModel.CloseWindow();
-            }), PositionViewModel.ShowAddForm);
+                Parent.PositionViewModel.CloseWindow();
+            }), Parent.PositionViewModel.ShowAddForm);
         });
         
         public ICommand OpenDepartmentWindowForAdd => new DelegateCommand(() =>
         {
-            DepartmentViewModel.SelectedDepartment = default;
-            DepartmentViewModel.Search = default;
-            DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentWindow>(new DelegateCommand(() =>
+            Parent.DepartmentViewModel.SelectedDepartment = default;
+            Parent.DepartmentViewModel.Search = default;
+            Parent.DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentView>(new DelegateCommand(() =>
             {
-                Employee.Department = DepartmentViewModel.SelectedDepartment;
+                Employee.Department = Parent.DepartmentViewModel.SelectedDepartment;
                 RaisePropertyChanged(nameof(Employee));
-                DepartmentViewModel.CloseWindow();
-            }), DepartmentViewModel.ShowAddForm);
+                Parent.DepartmentViewModel.CloseWindow();
+            }), Parent.DepartmentViewModel.ShowAddForm);
         });
 
         private void Clear()
@@ -239,9 +224,9 @@ namespace Employees.ViewModels
             if (Mode == WindowMode.Read) return;
             
             if (Employee?.Position != default)
-                Employee.Position = PositionViewModel.Positions.FirstOrDefault(p => p.Id == Employee.Position.Id);
+                Employee.Position = Parent.PositionViewModel.Positions.FirstOrDefault(p => p.Id == Employee.Position.Id);
             else if (Employee?.PositionId != default)
-                Employee.Position = PositionViewModel.Positions.FirstOrDefault(p => p.Id == Employee.PositionId);
+                Employee.Position = Parent.PositionViewModel.Positions.FirstOrDefault(p => p.Id == Employee.PositionId);
             RaisePropertyChanged(nameof(Employee));
         }
         
@@ -250,9 +235,9 @@ namespace Employees.ViewModels
             if (Mode == WindowMode.Read) return;
             
             if (Employee?.Department != null)
-                Employee.Department = DepartmentViewModel.Departments.FirstOrDefault(p => p.Id == Employee.Department.Id);
+                Employee.Department = Parent.DepartmentViewModel.Departments.FirstOrDefault(p => p.Id == Employee.Department.Id);
             else if (Employee?.DepartmentId != default)
-                Employee.Department = DepartmentViewModel.Departments.FirstOrDefault(p => p.Id == Employee.DepartmentId);
+                Employee.Department = Parent.DepartmentViewModel.Departments.FirstOrDefault(p => p.Id == Employee.DepartmentId);
             RaisePropertyChanged(nameof(Employee));
         }
 

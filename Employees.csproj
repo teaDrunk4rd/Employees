@@ -126,15 +126,19 @@
     <Compile Include="ViewModels\Classes\SearchableViewModel.cs" />
     <Compile Include="ViewModels\DepartmentViewModel.cs" />
     <Compile Include="ViewModels\EmployeeViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PositionViewModel.cs" />
-    <Compile Include="Views\DepartmentWindow.xaml.cs">
-      <DependentUpon>DepartmentWindow.xaml</DependentUpon>
+    <Compile Include="Views\DepartmentView.xaml.cs">
+      <DependentUpon>DepartmentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EmployeeWindow.xaml.cs">
-      <DependentUpon>EmployeeWindow.xaml</DependentUpon>
+    <Compile Include="Views\EmployeeView.xaml.cs">
+      <DependentUpon>EmployeeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PositionWindow.xaml.cs">
-      <DependentUpon>PositionWindow.xaml</DependentUpon>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PositionView.xaml.cs">
+      <DependentUpon>PositionView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -181,21 +185,25 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\departments.png" />
+    <Resource Include="img\employees.png" />
     <Resource Include="img\positions.png" />
     <Resource Include="img\magnifier.svg" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Styles.xaml" />
-    <Page Include="Views\DepartmentWindow.xaml">
+    <Page Include="Views\DepartmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EmployeeWindow.xaml">
+    <Page Include="Views\EmployeeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PositionWindow.xaml">
+    <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PositionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -204,6 +212,7 @@
     <Resource Include="LinqToDB.Templates\CopyMe.PostgreSQL.tt.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="img\departments.png" />
     <Content Include="Models\Employees.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Employees.generated.cs</LastGenOutput>

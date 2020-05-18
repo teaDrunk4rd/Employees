@@ -14,12 +14,9 @@ using System.Windows.Shapes;
 
 namespace Employees.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для DepartmentWindow.xaml
-    /// </summary>
-    public partial class DepartmentWindow : Window
+    public partial class DepartmentView : Window
     {
-        public DepartmentWindow()
+        public DepartmentView()
         {
             InitializeComponent();
             WindowStartupLocation = WindowStartupLocation.CenterScreen;

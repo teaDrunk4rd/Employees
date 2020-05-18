@@ -12,7 +12,7 @@ using LinqToDB;
 
 namespace Employees.ViewModels
 {
-    class PositionViewModel : LookupViewModel
+    public class PositionViewModel : LookupViewModel
     {
         private Position _selectedPosition;
         private Position _position;
