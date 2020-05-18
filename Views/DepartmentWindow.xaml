@@ -41,8 +41,8 @@
                     <TextBox Text="{Binding Department.Name, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Style="{StaticResource BottomButtons}">
-                    <Button Margin="4 0" Command="{Binding AddCommand}" Content="ОК" />
                     <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
+                    <Button Margin="4 0" Command="{Binding AddCommand}" Content="ОК" />
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -55,8 +55,8 @@
                     <TextBox Text="{Binding Department.Name, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Style="{StaticResource BottomButtons}">
-                    <Button Margin="4 0" Command="{Binding EditCommand}" Content="ОК" />
                     <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
+                    <Button Margin="4 0" Command="{Binding EditCommand}" Content="ОК" />
                 </StackPanel>
             </Grid>
         </GroupBox>

@@ -96,7 +96,7 @@ namespace Employees.ViewModels
             SelectedPosition = (Position) Position.Clone();
             DBModel.EmployeesDB.Update(SelectedPosition);
             ClearWithUpdate();
-        }, () => CanExecuteUpsertCommand(SelectedPosition));
+        }, () => CanExecuteUpsertCommand(Position));
 
         public ICommand DeleteCommand => new DelegateCommand(() =>
         {

@@ -104,8 +104,16 @@ namespace Employees.ViewModels
 
         public EmployeeViewModel()
         {
-            PositionViewModel.OnUpdateCollection = new DelegateCommand(UpdateEverything);
-            DepartmentViewModel.OnUpdateCollection = new DelegateCommand(UpdateEverything);
+            PositionViewModel.OnUpdateCollection = new DelegateCommand(() =>
+            {
+                Employees = DBModel.EmployeesTable.ToList();
+                UpdateEverything();
+            });
+            DepartmentViewModel.OnUpdateCollection = new DelegateCommand(() =>
+            {
+                Employees = DBModel.EmployeesTable.ToList();
+                UpdateEverything();
+            });
             
             Employees = DBModel.EmployeesTable.ToList();
             FilteredEmployees = new ObservableCollection<EmployeeModel>(Employees.Where(e => e.Search(Search))
@@ -133,12 +141,13 @@ namespace Employees.ViewModels
         {
             DBModel.Context.Insert(Employee);
             ClearWithUpdate();
-            SelectedEmployee = FilteredEmployees.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2).GetEmployee();
+            SelectedEmployeeModel = FilteredEmployees.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
         }, () => CanExecuteUpsertCommand(Employee));
 
         public ICommand EditCommand => new DelegateCommand(() =>
         {
             SelectedEmployee = (Employee) Employee.Clone();
+            SelectedEmployee.PassportNumberSeries = SelectedEmployee.PassportNumberSeries.Replace(" ", string.Empty); // TODO: использовать конвертер
             DBModel.EmployeesDB.Update(SelectedEmployee);
             ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(SelectedEmployee));
@@ -148,7 +157,7 @@ namespace Employees.ViewModels
             if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
                 return;
             DBModel.EmployeesDB.Delete(SelectedEmployee);
-            Employees.Remove(SelectedEmployee);
+            Employees.Remove(Employees.First(e => e.Id == SelectedEmployee.Id));
             FilteredEmployees.Remove(SelectedEmployeeModel);
             SelectedEmployee = default;
             Clear();

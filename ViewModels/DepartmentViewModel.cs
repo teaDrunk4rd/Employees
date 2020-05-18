@@ -96,7 +96,7 @@ namespace Employees.ViewModels
             SelectedDepartment = (Department) Department.Clone();
             DBModel.EmployeesDB.Update(SelectedDepartment);
             ClearWithUpdate();
-        }, () => CanExecuteUpsertCommand(SelectedDepartment));
+        }, () => CanExecuteUpsertCommand(Department));
 
         public ICommand DeleteCommand => new DelegateCommand(() =>
         {
