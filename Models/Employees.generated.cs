@@ -15,6 +15,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.NetworkInformation;
 using System.Reflection;
+
 using LinqToDB;
 using LinqToDB.Common;
 using LinqToDB.Data;
@@ -31,9 +32,11 @@ namespace DataModels
 	/// </summary>
 	public partial class EmployeesDB : LinqToDB.Data.DataConnection
 	{
-		public ITable<Department> Departments { get { return this.GetTable<Department>(); } }
-		public ITable<Employee>   Employees   { get { return this.GetTable<Employee>(); } }
-		public ITable<Position>   Positions   { get { return this.GetTable<Position>(); } }
+		public ITable<Department>    Departments    { get { return this.GetTable<Department>(); } }
+		public ITable<Employee>      Employees      { get { return this.GetTable<Employee>(); } }
+		public ITable<EmployeeSkill> EmployeeSkills { get { return this.GetTable<EmployeeSkill>(); } }
+		public ITable<Position>      Positions      { get { return this.GetTable<Position>(); } }
+		public ITable<Skill>         Skills         { get { return this.GetTable<Skill>(); } }
 
 		partial void InitMappingSchema()
 		{
@@ -1640,40 +1643,49 @@ namespace DataModels
 		[Column("department_id"),             Nullable          ] public long?    DepartmentId         { get; set; } // bigint
 		[Column("position_id"),               Nullable          ] public long?    PositionId           { get; set; } // bigint
 
-		private Department _department;
-		private Position _position;
-
 		#region Associations
 
 		/// <summary>
 		/// employee_fk_1
 		/// </summary>
 		[Association(ThisKey="DepartmentId", OtherKey="Id", CanBeNull=true, Relationship=Relationship.ManyToOne, KeyName="employee_fk_1", BackReferenceName="Employeefks")]
-		public Department Department
-		{
-			get => _department;
-			set
-			{
-				_department = value;
-				if (value != null)
-					DepartmentId = value.Id;
-			}
-		}
+		public Department Department { get; set; }
 
 		/// <summary>
 		/// employee_fk_2
 		/// </summary>
 		[Association(ThisKey="PositionId", OtherKey="Id", CanBeNull=true, Relationship=Relationship.ManyToOne, KeyName="employee_fk_2", BackReferenceName="Employeefks")]
-		public Position Position
-		{
-			get => _position;
-			set
-			{
-				_position = value;
-				if (value != null)
-					PositionId = value.Id;
-			}
-		}
+		public Position Position { get; set; }
+
+		/// <summary>
+		/// employee_skill_employee_id_fk_BackReference
+		/// </summary>
+		[Association(ThisKey="Id", OtherKey="EmployeeId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
+		public IEnumerable<EmployeeSkill> Skillidfks { get; set; }
+
+		#endregion
+	}
+
+	[Table(Schema="public", Name="employee_skill")]
+	public partial class EmployeeSkill
+	{
+		[Column("employee_id"), PrimaryKey(1), NotNull] public long  EmployeeId { get; set; } // bigint
+		[Column("skill_id"),    PrimaryKey(2), NotNull] public long  SkillId    { get; set; } // bigint
+		[Column("level"),                      NotNull] public short Level      { get; set; } // smallint
+
+		#region Associations
+
+		/// <summary>
+		/// employee_skill_employee_id_fk
+		/// </summary>
+		[Association(ThisKey="EmployeeId", OtherKey="Id", CanBeNull=false, Relationship=Relationship.ManyToOne, KeyName="employee_skill_employee_id_fk", BackReferenceName="Skillidfks")]
+		public Employee Employee { get; set; }
+
+		/// <summary>
+		/// employee_skill_skill_id_fk
+		/// </summary>
+		[Association(ThisKey="SkillId", OtherKey="Id", CanBeNull=false, Relationship=Relationship.ManyToOne, KeyName="employee_skill_skill_id_fk", BackReferenceName="Employeeidfks")]
+		public Skill Skill { get; set; }
 
 		#endregion
 	}
@@ -1691,6 +1703,23 @@ namespace DataModels
 		/// </summary>
 		[Association(ThisKey="Id", OtherKey="PositionId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
 		public IEnumerable<Employee> Employeefks { get; set; }
+
+		#endregion
+	}
+
+	[Table(Schema="public", Name="skill")]
+	public partial class Skill
+	{
+		[Column("id"),   PrimaryKey, Identity] public long   Id   { get; set; } // bigint
+		[Column("name"), NotNull             ] public string Name { get; set; } // text
+
+		#region Associations
+
+		/// <summary>
+		/// employee_skill_skill_id_fk_BackReference
+		/// </summary>
+		[Association(ThisKey="Id", OtherKey="SkillId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
+		public IEnumerable<EmployeeSkill> Employeeidfks { get; set; }
 
 		#endregion
 	}
@@ -25372,7 +25401,20 @@ namespace DataModels
 				t.Id == Id);
 		}
 
+		public static EmployeeSkill Find(this ITable<EmployeeSkill> table, long EmployeeId, long SkillId)
+		{
+			return table.FirstOrDefault(t =>
+				t.EmployeeId == EmployeeId &&
+				t.SkillId    == SkillId);
+		}
+
 		public static Position Find(this ITable<Position> table, long Id)
+		{
+			return table.FirstOrDefault(t =>
+				t.Id == Id);
+		}
+
+		public static Skill Find(this ITable<Skill> table, long Id)
 		{
 			return table.FirstOrDefault(t =>
 				t.Id == Id);

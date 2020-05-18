@@ -1,0 +1,71 @@
+﻿<Window x:Class="Employees.Views.SkillView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:classes="clr-namespace:Employees.Classes"
+        xmlns:converters="clr-namespace:Employees.Classes.Converters"
+        mc:Ignorable="d"
+        Title="Навыки" Height="400" Width="450" MinWidth="350" MinHeight="350" Background="#fafafa">
+
+    <Window.Resources>
+        <converters:WindowModeToVisibilityConverter x:Key="ModeToVisibilityConverter" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Read}}">
+            <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Search}" 
+                     DockPanel.Dock="Top" Margin="10 10 10 0" />
+            
+            <DataGrid ItemsSource="{Binding FilteredSkills}" SelectedItem="{Binding SelectedSkill}" 
+                      Style="{StaticResource EmptyDataMessage}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" Width="*" />
+                </DataGrid.Columns>
+                <DataGrid.InputBindings>
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding OnSelection}" />
+                </DataGrid.InputBindings>
+            </DataGrid>
+        </DockPanel>
+
+        <GroupBox Grid.Column="0" Header="Добавление"
+                  Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Add}}">
+            <Grid>
+                <StackPanel>
+                    <Label Content="Наименование" />
+                    <TextBox Text="{Binding Skill.Name, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+                <StackPanel Style="{StaticResource BottomButtons}">
+                    <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
+                    <Button Margin="4 0" Command="{Binding AddCommand}" Content="ОК" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Column="0" Header="Редактирование"
+                  Visibility="{Binding Mode, Converter={StaticResource ModeToVisibilityConverter}, ConverterParameter={x:Static classes:WindowMode.Edit}}">
+            <Grid>
+                <StackPanel>
+                    <Label Content="Наименование" />
+                    <TextBox Text="{Binding Skill.Name, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+                <StackPanel Style="{StaticResource BottomButtons}">
+                    <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
+                    <Button Margin="4 0" Command="{Binding EditCommand}" Content="ОК" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <StackPanel Grid.Column="1" Margin="0 50">
+            <Button Margin="4 0 4 4" Content="Добавить" Command="{Binding ShowAddForm}" />
+            <Button Margin="4" Padding="0" Content="Редактировать" Command="{Binding ShowEditForm}" />
+            <Button Visibility="Hidden" />
+            <Button Margin="4" Content="Удалить" Command="{Binding DeleteCommand}" />
+        </StackPanel>
+    </Grid>
+</Window>

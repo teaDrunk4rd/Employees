@@ -122,12 +122,14 @@
     <Compile Include="Models\ModelsAddition\Department.cs" />
     <Compile Include="Models\ModelsAddition\Employee.cs" />
     <Compile Include="Models\ModelsAddition\Position.cs" />
+    <Compile Include="Models\ModelsAddition\Skill.cs" />
     <Compile Include="ViewModels\Classes\LookupViewModel.cs" />
     <Compile Include="ViewModels\Classes\SearchableViewModel.cs" />
     <Compile Include="ViewModels\DepartmentViewModel.cs" />
     <Compile Include="ViewModels\EmployeeViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PositionViewModel.cs" />
+    <Compile Include="ViewModels\SkillViewModel.cs" />
     <Compile Include="Views\DepartmentView.xaml.cs">
       <DependentUpon>DepartmentView.xaml</DependentUpon>
     </Compile>
@@ -139,6 +141,9 @@
     </Compile>
     <Compile Include="Views\PositionView.xaml.cs">
       <DependentUpon>PositionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SkillView.xaml.cs">
+      <DependentUpon>SkillView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -207,12 +212,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SkillView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="LinqToDB.Templates\CopyMe.PostgreSQL.tt.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\departments.png" />
+    <Resource Include="img\skills.png" />
     <Content Include="Models\Employees.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Employees.generated.cs</LastGenOutput>

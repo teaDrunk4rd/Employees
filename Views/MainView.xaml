@@ -11,6 +11,15 @@
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
+    
+    <Window.Resources>
+        <Style TargetType="RibbonButton" x:Key="SkyBlueRibbonButton">
+            <Setter Property="MouseOverBackground" Value="SkyBlue" />
+            <Setter Property="PressedBorderBrush" Value="SkyBlue" />
+            <Setter Property="PressedBackground" Value="SkyBlue" />
+            <Setter Property="MouseOverBorderBrush" Value="SkyBlue" />
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -25,12 +34,14 @@
         <r:Ribbon Margin="0 -52 0 0" MouseOverBorderBrush="SkyBlue" Grid.ColumnSpan="2">
             <RibbonTab Header="Основная вкладка" Height="80" Margin="0">
                 <RibbonGroup Header="Справочники">
-                    <RibbonButton Label="Сотрудники" LargeImageSource="../img/employees.png" Command="{Binding OpenEmployeeWindow}"
-                                  MouseOverBackground="SkyBlue" PressedBorderBrush="SkyBlue" PressedBackground="SkyBlue" MouseOverBorderBrush="SkyBlue" />
-                    <RibbonButton Label="Должности" LargeImageSource="../img/positions.png" Command="{Binding OpenPositionWindow}"
-                            MouseOverBackground="SkyBlue" PressedBorderBrush="SkyBlue" PressedBackground="SkyBlue" MouseOverBorderBrush="SkyBlue" />
-                    <RibbonButton Label="Отделы" LargeImageSource="../img/departments.png" Command="{Binding OpenDepartmentWindow}" 
-                            MouseOverBackground="SkyBlue" PressedBorderBrush="SkyBlue" PressedBackground="SkyBlue" MouseOverBorderBrush="SkyBlue" />
+                    <RibbonButton Label="Сотрудники" Command="{Binding OpenEmployeeWindow}" 
+                                  Style="{StaticResource SkyBlueRibbonButton}" LargeImageSource="../img/employees.png" />
+                    <RibbonButton Label="Должности" Command="{Binding OpenPositionWindow}" 
+                                  Style="{StaticResource SkyBlueRibbonButton}" LargeImageSource="../img/positions.png" />
+                    <RibbonButton Label="Отделы" Command="{Binding OpenDepartmentWindow}" 
+                                  Style="{StaticResource SkyBlueRibbonButton}" LargeImageSource="../img/departments.png" />
+                    <RibbonButton Label="Навыки" Command="{Binding OpenSkillWindow}" 
+                                  Style="{StaticResource SkyBlueRibbonButton}" LargeImageSource="../img/skills.png" />
                 </RibbonGroup>
             </RibbonTab>
         </r:Ribbon>
