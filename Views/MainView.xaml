@@ -6,7 +6,7 @@
         xmlns:r="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
         xmlns:vm="clr-namespace:Employees.ViewModels"
         mc:Ignorable="d"
-        Title="Учет сотрудников" Height="500" Width="900"  MinWidth="700" MinHeight="395" Background="#fafafa">
+        Title="Учет сотрудников" Height="400" Width="800" MinHeight="300" MinWidth="600" Background="#fafafa">
 
     <Window.DataContext>
         <vm:MainViewModel />

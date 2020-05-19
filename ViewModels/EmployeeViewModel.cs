@@ -7,6 +7,7 @@ using DevExpress.Mvvm;
 using Employees.Views;
 using System.Windows.Input;
 using DataModels;
+using DevExpress.Mvvm.Native;
 using Employees.Classes;
 using Employees.Models;
 using Employees.ViewModels.Classes;
@@ -37,9 +38,7 @@ namespace Employees.ViewModels
             get => FilteredEmployees.FirstOrDefault(e => e.Id == _selectedEmployee?.Id);
             set
             {
-                var employee = value?.GetEmployee();
-                if (Equals(SelectedEmployee, employee)) return;
-                SelectedEmployee = employee;
+                SelectedEmployee = value?.GetEmployee();
                 RaisePropertyChanged(nameof(SelectedEmployeeModel));
             }
         }
@@ -54,6 +53,8 @@ namespace Employees.ViewModels
                 RaisePropertyChanged(nameof(Employee));
             }
         }
+
+        public EmployeeSkill SelectedEmployeeSkill { get; set; }
 
         public List<Employee> Employees
         {
@@ -104,11 +105,15 @@ namespace Employees.ViewModels
         {
             Mode = WindowMode.Add;
             Employee = new Employee{PassportInfoWhen = DateTime.Today};
+            Employee.UpdateSkills();
         }, () =>  Mode == WindowMode.Read);
 
         public ICommand ShowEditForm => new DelegateCommand(() =>
         {
+            SelectedEmployee.Skillidfks.ForEach(es =>
+                es.Skill = Parent.SkillsViewModel.Skills.FirstOrDefault(s=>s.Id == es.SkillId));
             Employee = (Employee) SelectedEmployee.Clone();
+            Employee.UpdateSkills();
             Mode = WindowMode.Edit;
             UpdatePosition();
             UpdateDepartment();
@@ -117,22 +122,24 @@ namespace Employees.ViewModels
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
-            DBModel.Context.Insert(Employee);
+            var employeeId = DBModel.Context.InsertWithInt64Identity(Employee);
+            Employee.SaveSkills(employeeId);
             ClearWithUpdate();
             SelectedEmployeeModel = FilteredEmployees.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
         }, () => CanExecuteUpsertCommand(Employee));
 
         public override ICommand EditCommand => new DelegateCommand(() =>
         {
-            SelectedEmployee = (Employee) Employee.Clone();
+            SelectedEmployee = (Employee) Employee.Clone(); // мб использовать Employee?
             SelectedEmployee.PassportNumberSeries = SelectedEmployee.PassportNumberSeries.Replace(" ", string.Empty); // TODO: использовать конвертер
-            DBModel.EmployeesDB.Update(SelectedEmployee);
+            DBModel.EmployeesDB.Update(SelectedEmployee); // Update через Context?
+            SelectedEmployee.SaveSkills();
             ClearWithUpdate();
-        }, () => CanExecuteUpsertCommand(SelectedEmployee));
+        }, () => CanExecuteUpsertCommand(Employee));
 
         public override ICommand DeleteCommand => new DelegateCommand(() =>
         {
-            if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
+            if (Extensions.ShowConfirmationModal() != MessageBoxResult.Yes) 
                 return;
             DBModel.EmployeesDB.Delete(SelectedEmployee);
             Employees.Remove(Employees.First(e => e.Id == SelectedEmployee.Id));
@@ -146,7 +153,6 @@ namespace Employees.ViewModels
         public ICommand OpenPositionWindowForAdd => new DelegateCommand(() =>
         {
             Parent.PositionViewModel.SelectedPosition = default;
-            Parent.PositionViewModel.Search = default;
             Parent.PositionViewModel.OpenWindow<PositionViewModel, PositionView>(new DelegateCommand(() =>
             {
                 Employee.Position = Parent.PositionViewModel.SelectedPosition;
@@ -158,7 +164,6 @@ namespace Employees.ViewModels
         public ICommand OpenDepartmentWindowForAdd => new DelegateCommand(() =>
         {
             Parent.DepartmentViewModel.SelectedDepartment = default;
-            Parent.DepartmentViewModel.Search = default;
             Parent.DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentView>(new DelegateCommand(() =>
             {
                 Employee.Department = Parent.DepartmentViewModel.SelectedDepartment;
@@ -166,10 +171,50 @@ namespace Employees.ViewModels
                 Parent.DepartmentViewModel.CloseWindow();
             }), Parent.DepartmentViewModel.ShowAddForm);
         });
+        
+        public ICommand OpenSkillsWindowForAdd => new DelegateCommand(() =>
+        {
+            Parent.SkillsViewModel.SelectedSkill = default;
+            Parent.SkillsViewModel.OpenWindow<SkillViewModel, SkillView>(new DelegateCommand(() =>
+            {
+                var skillLevelChooserViewModel = new SkillLevelChooserViewModel
+                    { SkillName = Parent.SkillsViewModel.SelectedSkill.Name };
+                skillLevelChooserViewModel.OpenModal<SkillLevelChooserViewModel, SkillLevelChooserView>(
+                    new DelegateCommand(() =>
+                    {
+                        skillLevelChooserViewModel.CloseWindow();
+                        Parent.SkillsViewModel.CloseWindow();
+                        
+                        Employee.SkillsToAdd.Add(new EmployeeSkill
+                        {
+                            Employee = Employee, 
+                            EmployeeId = Employee.Id,
+                            Level = short.Parse(skillLevelChooserViewModel.Level),
+                            Skill = Parent.SkillsViewModel.SelectedSkill,
+                            SkillId = Parent.SkillsViewModel.SelectedSkill.Id
+                        });
+                        Employee.UpdateSkills();
+                    })
+                );
+            }));
+        });
+
+        public ICommand DeleteSkill => new DelegateCommand(() =>
+        {
+            Employee.SkillsToDelete.Add((EmployeeSkill) SelectedEmployeeSkill.Clone());
+            SelectedEmployeeSkill = default;
+            RaisePropertyChanged(nameof(SelectedEmployeeSkill));
+            Employee.UpdateSkills();
+        }, () =>  SelectedEmployeeSkill != default);
 
         private void Clear()
         {
             Employee = default;
+            if (SelectedEmployee != default)
+            {
+                SelectedEmployee.SkillsToAdd = new List<EmployeeSkill>();
+                SelectedEmployee.SkillsToDelete = new List<EmployeeSkill>();
+            }
             Mode = WindowMode.Read;
         }
 

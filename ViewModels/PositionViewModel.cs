@@ -100,7 +100,7 @@ namespace Employees.ViewModels
 
         public override ICommand DeleteCommand => new DelegateCommand(() =>
         {
-            if (Extensions.ShowConfirmationDialog() != MessageBoxResult.Yes) 
+            if (Extensions.ShowConfirmationModal() != MessageBoxResult.Yes) 
                 return;
             DBModel.EmployeesDB.Delete(SelectedPosition);
             Positions.Remove(SelectedPosition);

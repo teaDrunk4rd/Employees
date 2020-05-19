@@ -6,7 +6,7 @@
         xmlns:classes="clr-namespace:Employees.Classes"
         xmlns:converters="clr-namespace:Employees.Classes.Converters"
         mc:Ignorable="d"
-        Title="Отделы" Height="400" Width="450" MinWidth="350" MinHeight="350" Background="#fafafa">
+        Title="Отделы" Height="400" Width="500" MinHeight="350" MinWidth="350" Background="#fafafa">
 
     <Window.Resources>
         <converters:WindowModeToVisibilityConverter x:Key="ModeToVisibilityConverter" />
@@ -40,17 +40,17 @@
                     <TextBox Text="{Binding Department.Name, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Style="{StaticResource BottomButtons}">
-                    <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
-                    <Button Margin="4 0" Command="{Binding OkCommand}" Content="ОК" />
+                    <Button Command="{Binding ClearCommand}" Content="Отмена" Margin="4 0" />
+                    <Button Command="{Binding OkCommand}" Content="ОК" Margin="4 0" />
                 </StackPanel>
             </Grid>
         </GroupBox>
 
         <StackPanel Grid.Column="1" Margin="0 50">
-            <Button Margin="4 0 4 4" Content="Добавить" Command="{Binding ShowAddForm}" />
-            <Button Margin="4" Padding="0" Content="Редактировать" Command="{Binding ShowEditForm}" />
+            <Button Command="{Binding ShowAddForm}" Content="Добавить" Margin="4 0 4 4" />
+            <Button Command="{Binding ShowEditForm}" Content="Редактировать" Margin="4" Padding="0" />
             <Button Visibility="Hidden" />
-            <Button Margin="4" Content="Удалить" Command="{Binding DeleteCommand}" />
+            <Button Command="{Binding DeleteCommand}" Content="Удалить" Margin="4" />
         </StackPanel>
     </Grid>
 </Window>

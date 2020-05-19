@@ -50,7 +50,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="DataGrid">
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2 15" Text="Записи отсутствуют" />
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15" Text="Записи отсутствуют" />
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -74,10 +74,11 @@
 
 
     <Style TargetType="TextBox">
+        <Setter Property="Height" Value="28" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Border CornerRadius="3" BorderBrush="DarkGray" BorderThickness="1" Padding="5 4">
+                    <Border Style="{StaticResource BasicBorder}" Padding="5">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />

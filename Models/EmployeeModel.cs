@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DataModels;
 
@@ -14,6 +15,8 @@ namespace Employees.Models
         public string PassportInfo { get; set; }
         public Department Department { get; set; }
         public Position Position { get; set; }
+        public IEnumerable<EmployeeSkill> Skills { get; set; }
+        public int SkillsCount { get; set; }
 
         public EmployeeModel(Employee employee)
         {
@@ -27,6 +30,8 @@ namespace Employees.Models
             PassportInfo = $"{employee.PassportInfoWhen:dd.MM.yyyy} {employee.PassportInfoWhom}";
             Department = employee.Department;
             Position = employee.Position;
+            Skills = employee.Skillidfks;
+            SkillsCount = employee.Skillidfks.ToList().Count;
         }
 
         public Employee GetEmployee()
@@ -44,6 +49,7 @@ namespace Employees.Models
                 PassportNumberSeries = PassportNumberSeries,
                 PassportInfoWhen = DateTime.Parse(passportInfo[0]),
                 PassportInfoWhom = passportInfo[1],
+                Skillidfks = Skills,
                 Department = Department,
                 DepartmentId = Department?.Id,
                 Position = Position,

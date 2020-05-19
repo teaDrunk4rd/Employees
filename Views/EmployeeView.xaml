@@ -6,7 +6,7 @@
         xmlns:classes="clr-namespace:Employees.Classes"
         xmlns:converters="clr-namespace:Employees.Classes.Converters"
         mc:Ignorable="d"
-        Title="Сотрудники" Height="500" Width="900"  MinWidth="700" MinHeight="395" Background="#fafafa">
+        Title="Сотрудники" Height="500" Width="900" MinHeight="450" MinWidth="700" Background="#fafafa">
     
     <Window.Resources>
         <converters:WindowModeToVisibilityConverter x:Key="ModeToVisibilityConverter" />
@@ -28,6 +28,7 @@
                     <DataGridTextColumn Header="ФИО" Binding="{Binding Path=FullName}" />
                     <DataGridTextColumn Header="Должность" Binding="{Binding Path=Position.Name}" />
                     <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Department.Name}" />
+                    <DataGridTextColumn Header="Навыки" Binding="{Binding Path=SkillsCount}" />
                     <DataGridTextColumn Header="Номер" Binding="{Binding Path=Phone}" />
                     <DataGridTextColumn Header="Адрес" Binding="{Binding Path=Address}" />
                     <DataGridTextColumn Header="Серия номер паспорта" Binding="{Binding Path=PassportNumberSeries}" />
@@ -41,90 +42,121 @@
 
         <GroupBox Grid.Column="0" Header="{Binding FormName}" Visibility="{Binding FormVisibility}">
             <Grid Margin="6 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="34"/>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}">
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}"> <!-- TODO: убрать DataContext -->
                     <Label Content="Фамилия" />
                     <TextBox Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}">
                     <Label Content="Имя" />
                     <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}">
                     <Label Content="Отчество" />
                     <TextBox Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0 0 10 0" DataContext="{Binding Employee}">
                     <Label Content="Номер" />
                     <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" /> <!-- format -->
                 </StackPanel>
-                
-                <StackPanel Grid.Column="1" Margin="0 0 10 0">
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 0 10 0">
                     <Label Content="Должность" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="30" />
-                        </Grid.ColumnDefinitions>
-                        <Border Style="{StaticResource BasicBorder}"> <!-- кнопка пропадает, съедает низ букв -->
-                            <ComboBox DisplayMemberPath="Name" Height="25" Margin="5 1"
-                                      ItemsSource="{Binding PositionViewModel.Positions}"
+                    <Border Style="{StaticResource BasicBorder}" Height="28"> <!-- кнопка пропадает, линии при выборе -->
+                        <ComboBox DisplayMemberPath="Name" Margin="5 1" Height="28"
+                                      ItemsSource="{Binding Parent.PositionViewModel.Positions}"
                                       SelectedItem="{Binding Employee.Position}" />
-                        </Border>
-                        <Button Command="{Binding OpenPositionWindowForAdd}" Content="..." Padding="6 0" Margin="5 0 0 0" Grid.Column="1" />
-                    </Grid>
-                    <Label Content="Отдел" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="30" />
-                        </Grid.ColumnDefinitions>
-                        <Border Style="{StaticResource BasicBorder}"> <!-- кнопка пропадает, съедает низ букв -->
-                            <ComboBox DisplayMemberPath="Name" Height="25" Margin="5 1" 
-                                ItemsSource="{Binding DepartmentViewModel.Departments}"
-                                SelectedItem="{Binding Employee.Department}" />
-                        </Border>
-                        <Button Command="{Binding OpenDepartmentWindowForAdd}" Content="..." Padding="6 0" Margin="5 0 0 0" Grid.Column="1" />
-                    </Grid>
+                    </Border>
                 </StackPanel>
-                
-                <StackPanel Grid.Column="2" Grid.ColumnSpan="2" DataContext="{Binding Employee}">
+
+                <StackPanel Grid.Row="2" Grid.Column="1" Margin="0 0 10 0">
+                    <Label Content="Отдел" />
+                    <Border Style="{StaticResource BasicBorder}" Height="28"> <!-- кнопка пропадает, линии при выборе -->
+                        <ComboBox DisplayMemberPath="Name" Margin="5 1" Height="28"
+                                ItemsSource="{Binding Parent.DepartmentViewModel.Departments}"
+                                SelectedItem="{Binding Employee.Department}" />
+                    </Border>
+                </StackPanel>
+
+                <Button Grid.Row="1" Grid.Column="2" Command="{Binding OpenPositionWindowForAdd}" Content="..." VerticalAlignment="Bottom" Padding="6 0" Margin="0 0 10 1" />
+
+                <Button Grid.Row="2" Grid.Column="2" Command="{Binding OpenDepartmentWindowForAdd}" Content="..." VerticalAlignment="Bottom" Padding="6 0" Margin="0 0 10 1" />
+
+                <StackPanel Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" DataContext="{Binding Employee}">
                     <Label Content="Адрес регистрации" />
                     <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
+                </StackPanel>
 
-                        <StackPanel Grid.Column="0" Margin="0 0 10 0">
-                            <Label Content="Серия номер паспорта" />
-                            <TextBox Text="{Binding PassportNumberSeries, UpdateSourceTrigger=PropertyChanged}" /> <!--extensions:TextBoxRegex.Regex="^([0-9]{4}\s{1}[0-9]{6})?$" -->
-                        </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="3" DataContext="{Binding Employee}" Margin="0 0 10 0">
+                    <StackPanel>
+                        <Label Content="Серия номер паспорта" />
+                        <TextBox Text="{Binding PassportNumberSeries, UpdateSourceTrigger=PropertyChanged}" />
+                        <!--extensions:TextBoxRegex.Regex="^([0-9]{4}\s{1}[0-9]{6})?$" -->
+                    </StackPanel>
+                </StackPanel>
 
-                        <StackPanel Grid.Column="1">
-                            <Label Content="Дата выдачи паспорта" />
-                            <Border Style="{StaticResource BasicBorder}">
-                                <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding PassportInfoWhen}" Margin="5 1" /> <!-- кнопка пропадает -->
-                            </Border>
-                        </StackPanel>
-                    </Grid>
+                <StackPanel Grid.Row="1" Grid.Column="4" DataContext="{Binding Employee}">
+                    <StackPanel>
+                        <Label Content="Дата выдачи паспорта" />
+                        <Border Style="{StaticResource BasicBorder}" Height="28">
+                            <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding PassportInfoWhen}" Height="28" Margin="5 1" />
+                            <!-- кнопка пропадает -->
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" DataContext="{Binding Employee}">
                     <Label Content="Кем выдан паспорт" />
                     <TextBox Text="{Binding PassportInfoWhom, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
-                
-                <StackPanel Grid.Column="3" Style="{StaticResource BottomButtons}">
-                    <Button Margin="4 0" Command="{Binding ClearCommand}" Content="Отмена" />
-                    <Button Margin="4 0" Command="{Binding OkCommand}" Content="ОК" />
+
+                <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  Margin="0 10 10 8">
+                    <Label DockPanel.Dock="Top" Content="Навыки" />
+                    <Border Style="{StaticResource BasicBorder}" Padding="1 0">
+                        <DataGrid Style="{StaticResource EmptyDataMessage}" Margin="0"
+                                  SelectedItem="{Binding SelectedEmployeeSkill}"
+                                  ItemsSource="{Binding Employee.Skills}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Skill.Name}" Width="*" />
+                                <DataGridTextColumn Header="Уровень" Binding="{Binding Path=Level}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </DockPanel>
+
+                <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="2" Margin="0 35 10 0">
+                    <Button Command="{Binding OpenSkillsWindowForAdd}" Content="+" Padding="8 0 8 2" />
+                    <Button Command="{Binding DeleteSkill}" Content="-" Padding="8 0 8 2" Margin="0 8" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="4" Style="{StaticResource BottomButtons}">
+                    <Button Command="{Binding ClearCommand}" Content="Отмена" Margin="4 0" />
+                    <Button Command="{Binding OkCommand}" Content="ОК" Margin="4 0" />
                 </StackPanel>
             </Grid>
         </GroupBox>
 
         <StackPanel Grid.Column="1" Margin="0 50">
-            <Button Margin="4 0 4 4" Content="Добавить" Command="{Binding ShowAddForm}" />
-            <Button Margin="4" Padding="0" Content="Редактировать" Command="{Binding ShowEditForm}" />
+            <Button Command="{Binding ShowAddForm}" Content="Добавить" Margin="4 0 4 4" />
+            <Button Command="{Binding ShowEditForm}" Content="Редактировать" Margin="4" Padding="0" />
             <Button Visibility="Hidden" />
-            <Button Margin="4" Content="Удалить" Command="{Binding DeleteCommand}" />
+            <Button Command="{Binding DeleteCommand}" Content="Удалить" Margin="4" />
         </StackPanel>
     </Grid>
 </Window>
