@@ -6,15 +6,26 @@ namespace Employees.ViewModels
 {
     public class SkillLevelChooserViewModel : ModalViewModel
     {
+        private short _level;
+
         public string SkillName { get; set; }
 
-        public string Level { get; set; }
+        public short Level
+        {
+            get => _level;
+            set
+            {
+                if (Equals(_level, value)) return;
+                _level = value;
+                RaisePropertyChanged(nameof(Level));
+            }
+        }
 
         public ICommand CancelCommand =>
             new DelegateCommand(() => AbortCommand?.Execute(null));
 
         public ICommand OkCommand =>
             new DelegateCommand(() => ApplyCommand?.Execute(null),
-                () => int.TryParse(Level, out var level) && level > 0 && level <= 5);
+                () => Level > 0 && Level <= 5);
     }
 }

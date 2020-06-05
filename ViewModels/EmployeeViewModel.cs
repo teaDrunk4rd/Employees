@@ -189,7 +189,7 @@ namespace Employees.ViewModels
                         {
                             Employee = Employee, 
                             EmployeeId = Employee.Id,
-                            Level = short.Parse(skillLevelChooserViewModel.Level),
+                            Level = skillLevelChooserViewModel.Level,
                             Skill = Parent.SkillsViewModel.SelectedSkill,
                             SkillId = Parent.SkillsViewModel.SelectedSkill.Id
                         });
