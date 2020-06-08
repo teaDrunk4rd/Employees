@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:r="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
         xmlns:vm="clr-namespace:Employees.ViewModels"
+        xmlns:views="clr-namespace:Employees.Views"
         mc:Ignorable="d"
-        Title="Учет сотрудников" Height="400" Width="800" MinHeight="300" MinWidth="600" Background="#fafafa">
+        Title="Учет сотрудников" Height="400" Width="800" MinHeight="350" MinWidth="600" Background="#fafafa">
 
     <Window.DataContext>
         <vm:MainViewModel />
@@ -26,12 +27,8 @@
             <RowDefinition Height="80" />
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*" />
-            <ColumnDefinition Width="1*" />
-        </Grid.ColumnDefinitions>
 
-        <r:Ribbon Margin="0 -52 0 0" MouseOverBorderBrush="SkyBlue" Grid.ColumnSpan="2">
+        <r:Ribbon Margin="0 -52 0 0" MouseOverBorderBrush="SkyBlue">
             <RibbonTab Header="Основная вкладка" Height="80" Margin="0">
                 <RibbonGroup Header="Справочники">
                     <RibbonButton Label="Сотрудники" Command="{Binding OpenEmployeeWindow}" 
@@ -45,5 +42,7 @@
                 </RibbonGroup>
             </RibbonTab>
         </r:Ribbon>
+        
+        <views:ProjectView Grid.Row="1" DataContext="{Binding ProjectViewModel}" />
     </Grid>
 </Window>

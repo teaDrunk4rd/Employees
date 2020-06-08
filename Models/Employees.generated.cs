@@ -32,11 +32,14 @@ namespace DataModels
 	/// </summary>
 	public partial class EmployeesDB : LinqToDB.Data.DataConnection
 	{
-		public ITable<Department>    Departments    { get { return this.GetTable<Department>(); } }
-		public ITable<Employee>      Employees      { get { return this.GetTable<Employee>(); } }
-		public ITable<EmployeeSkill> EmployeeSkills { get { return this.GetTable<EmployeeSkill>(); } }
-		public ITable<Position>      Positions      { get { return this.GetTable<Position>(); } }
-		public ITable<Skill>         Skills         { get { return this.GetTable<Skill>(); } }
+		public ITable<Department>           Departments           { get { return this.GetTable<Department>(); } }
+		public ITable<Employee>             Employees             { get { return this.GetTable<Employee>(); } }
+		public ITable<EmployeeSkill>        EmployeeSkills        { get { return this.GetTable<EmployeeSkill>(); } }
+		public ITable<Position>             Positions             { get { return this.GetTable<Position>(); } }
+		public ITable<Project>              Projects              { get { return this.GetTable<Project>(); } }
+		public ITable<ProjectParticipant>   ProjectParticipants   { get { return this.GetTable<ProjectParticipant>(); } }
+		public ITable<ProjectRequiredSkill> ProjectRequiredSkills { get { return this.GetTable<ProjectRequiredSkill>(); } }
+		public ITable<Skill>                Skills                { get { return this.GetTable<Skill>(); } }
 
 		partial void InitMappingSchema()
 		{
@@ -1658,6 +1661,12 @@ namespace DataModels
 		public Position Position { get; set; }
 
 		/// <summary>
+		/// project_participant_employee_id_fk_BackReference
+		/// </summary>
+		[Association(ThisKey="Id", OtherKey="EmployeeId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
+		public IEnumerable<ProjectParticipant> Projectparticipantidfks { get; set; }
+
+		/// <summary>
 		/// employee_skill_employee_id_fk_BackReference
 		/// </summary>
 		[Association(ThisKey="Id", OtherKey="EmployeeId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
@@ -1707,6 +1716,78 @@ namespace DataModels
 		#endregion
 	}
 
+	[Table(Schema="public", Name="project")]
+	public partial class Project
+	{
+		[Column("id"),          PrimaryKey,  Identity] public long     Id         { get; set; } // bigint
+		[Column("name"),           Nullable          ] public string   Name       { get; set; } // text
+		[Column("start_date"),  NotNull              ] public DateTime StartDate  { get; set; } // timestamp (6) without time zone
+		[Column("finish_date"), NotNull              ] public DateTime FinishDate { get; set; } // timestamp (6) without time zone
+
+		#region Associations
+
+		/// <summary>
+		/// project_participant_project_id_fk_BackReference
+		/// </summary>
+		[Association(ThisKey="Id", OtherKey="ProjectId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
+		public IEnumerable<ProjectParticipant> Participantidfks { get; set; }
+
+		/// <summary>
+		/// project_required_skills_project_id_fk_BackReference
+		/// </summary>
+		[Association(ThisKey="Id", OtherKey="ProjectId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
+		public IEnumerable<ProjectRequiredSkill> Requiredskillsidfks { get; set; }
+
+		#endregion
+	}
+
+	[Table(Schema="public", Name="project_participant")]
+	public partial class ProjectParticipant
+	{
+		[Column("project_id"),  NotNull] public long ProjectId  { get; set; } // bigint
+		[Column("employee_id"), NotNull] public long EmployeeId { get; set; } // bigint
+
+		#region Associations
+
+		/// <summary>
+		/// project_participant_employee_id_fk
+		/// </summary>
+		[Association(ThisKey="EmployeeId", OtherKey="Id", CanBeNull=false, Relationship=Relationship.ManyToOne, KeyName="project_participant_employee_id_fk", BackReferenceName="Projectparticipantidfks")]
+		public Employee Employee { get; set; }
+
+		/// <summary>
+		/// project_participant_project_id_fk
+		/// </summary>
+		[Association(ThisKey="ProjectId", OtherKey="Id", CanBeNull=false, Relationship=Relationship.ManyToOne, KeyName="project_participant_project_id_fk", BackReferenceName="Participantidfks")]
+		public Project Project { get; set; }
+
+		#endregion
+	}
+
+	[Table(Schema="public", Name="project_required_skills")]
+	public partial class ProjectRequiredSkill
+	{
+		[Column("project_id"), NotNull    ] public long   ProjectId { get; set; } // bigint
+		[Column("skill_id"),   NotNull    ] public long   SkillId   { get; set; } // bigint
+		[Column("level"),         Nullable] public short? Level     { get; set; } // smallint
+
+		#region Associations
+
+		/// <summary>
+		/// project_required_skills_project_id_fk
+		/// </summary>
+		[Association(ThisKey="ProjectId", OtherKey="Id", CanBeNull=false, Relationship=Relationship.ManyToOne, KeyName="project_required_skills_project_id_fk", BackReferenceName="Requiredskillsidfks")]
+		public Project Project { get; set; }
+
+		/// <summary>
+		/// project_required_skills_skill_id_fk
+		/// </summary>
+		[Association(ThisKey="SkillId", OtherKey="Id", CanBeNull=false, Relationship=Relationship.ManyToOne, KeyName="project_required_skills_skill_id_fk", BackReferenceName="Projectrequiredskillsidfks")]
+		public Skill Skill { get; set; }
+
+		#endregion
+	}
+
 	[Table(Schema="public", Name="skill")]
 	public partial class Skill
 	{
@@ -1720,6 +1801,12 @@ namespace DataModels
 		/// </summary>
 		[Association(ThisKey="Id", OtherKey="SkillId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
 		public IEnumerable<EmployeeSkill> Employeeidfks { get; set; }
+
+		/// <summary>
+		/// project_required_skills_skill_id_fk_BackReference
+		/// </summary>
+		[Association(ThisKey="Id", OtherKey="SkillId", CanBeNull=true, Relationship=Relationship.OneToMany, IsBackReference=true)]
+		public IEnumerable<ProjectRequiredSkill> Projectrequiredskillsidfks { get; set; }
 
 		#endregion
 	}
@@ -25409,6 +25496,12 @@ namespace DataModels
 		}
 
 		public static Position Find(this ITable<Position> table, long Id)
+		{
+			return table.FirstOrDefault(t =>
+				t.Id == Id);
+		}
+
+		public static Project Find(this ITable<Project> table, long Id)
 		{
 			return table.FirstOrDefault(t =>
 				t.Id == Id);

@@ -19,11 +19,11 @@ namespace DataModels
         public void UpdateSkills()
         {
             var skills = new List<EmployeeSkill>();
-            if (Skillidfks != default && SkillsToAdd != default)
+            if (!Skillidfks.Equals(default) && !SkillsToAdd.Equals(default))
                 skills = Skillidfks.Union(SkillsToAdd).ToList();
-            else if (Skillidfks != default)
+            else if (!Skillidfks.Equals(default))
                 skills = Skillidfks.ToList();
-            else if (SkillsToAdd != default)
+            else if (!SkillsToAdd.Equals(default))
                 skills = SkillsToAdd;
             Skills = new ObservableCollection<EmployeeSkill>(skills.Where(es =>
                 !SkillsToDelete.Any(s => s.SkillId == es.SkillId && s.EmployeeId == es.EmployeeId))); // TODO: перенести часть логики в EmployeeSkill

@@ -85,16 +85,15 @@ namespace Employees.ViewModels
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
-            DBModel.Context.Insert(Department);
+            var id = DBModel.Context.InsertWithInt64Identity(Department);
             ClearWithUpdate();
-            SelectedDepartment = FilteredDepartments.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
+            SelectedDepartment = FilteredDepartments.First(d => d.Id == id);
             OnSelection?.Execute(this);
         }, () => CanExecuteUpsertCommand(Department));
 
         public override ICommand EditCommand => new DelegateCommand(() =>
         {
-            SelectedDepartment = (Department) Department.Clone();
-            DBModel.EmployeesDB.Update(SelectedDepartment);
+            DBModel.EmployeesDB.Update(Department);
             ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(Department));
 

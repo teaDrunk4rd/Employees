@@ -122,18 +122,17 @@ namespace Employees.ViewModels
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
-            var employeeId = DBModel.Context.InsertWithInt64Identity(Employee);
-            Employee.SaveSkills(employeeId);
+            var id = DBModel.Context.InsertWithInt64Identity(Employee);
+            Employee.SaveSkills(id);
             ClearWithUpdate();
-            SelectedEmployeeModel = FilteredEmployees.Aggregate((d1, d2) => d1.Id > d2.Id ? d1 : d2);
+            SelectedEmployeeModel = FilteredEmployees.First(d => d.Id == id);
         }, () => CanExecuteUpsertCommand(Employee));
 
         public override ICommand EditCommand => new DelegateCommand(() =>
         {
-            SelectedEmployee = (Employee) Employee.Clone(); // мб использовать Employee?
-            SelectedEmployee.PassportNumberSeries = SelectedEmployee.PassportNumberSeries.Replace(" ", string.Empty); // TODO: использовать конвертер
-            DBModel.EmployeesDB.Update(SelectedEmployee); // Update через Context?
-            SelectedEmployee.SaveSkills();
+            Employee.PassportNumberSeries = Employee.PassportNumberSeries.Replace(" ", string.Empty); // TODO: использовать конвертер
+            DBModel.EmployeesDB.Update(Employee);
+            Employee.SaveSkills();
             ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(Employee));
 

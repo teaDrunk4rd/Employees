@@ -7,13 +7,15 @@ namespace Employees.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        public EmployeeViewModel EmployeeViewModel { get; }
-        
         public PositionViewModel PositionViewModel { get; }
         
         public DepartmentViewModel DepartmentViewModel { get; }
         
         public SkillViewModel SkillsViewModel { get; }
+        
+        public EmployeeViewModel EmployeeViewModel { get; }
+
+        public ProjectViewModel ProjectViewModel { get; }
 
         public MainViewModel()
         {
@@ -21,6 +23,7 @@ namespace Employees.ViewModels
             DepartmentViewModel = new DepartmentViewModel();
             SkillsViewModel = new SkillViewModel();
             EmployeeViewModel = new EmployeeViewModel(this);
+            ProjectViewModel = new ProjectViewModel();
         }
         
         public ICommand OpenEmployeeWindow => new DelegateCommand(() =>

@@ -108,6 +108,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\Converters\CollectionToCountConverter.cs" />
     <Compile Include="Classes\Converters\WindowModeToVisibilityConverter.cs" />
     <Compile Include="Classes\Extensions.cs" />
     <Compile Include="Classes\WindowMode.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Models\ModelsAddition\Employee.cs" />
     <Compile Include="Models\ModelsAddition\EmployeeSkill.cs" />
     <Compile Include="Models\ModelsAddition\Position.cs" />
+    <Compile Include="Models\ModelsAddition\Project.cs" />
     <Compile Include="Models\ModelsAddition\Skill.cs" />
     <Compile Include="ViewModels\Classes\LookupViewModel.cs" />
     <Compile Include="ViewModels\Classes\ModalViewModel.cs" />
@@ -131,6 +133,7 @@
     <Compile Include="ViewModels\EmployeeViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PositionViewModel.cs" />
+    <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\SkillLevelChooserViewModel.cs" />
     <Compile Include="ViewModels\SkillViewModel.cs" />
     <Compile Include="Views\DepartmentView.xaml.cs">
@@ -144,6 +147,9 @@
     </Compile>
     <Compile Include="Views\PositionView.xaml.cs">
       <DependentUpon>PositionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectView.xaml.cs">
+      <DependentUpon>ProjectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SkillLevelChooserView.xaml.cs">
       <DependentUpon>SkillLevelChooserView.xaml</DependentUpon>
@@ -218,6 +224,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ProjectView.xaml" />
     <Page Include="Views\SkillLevelChooserView.xaml" />
     <Page Include="Views\SkillView.xaml">
       <SubType>Designer</SubType>
@@ -232,7 +239,7 @@
     <Resource Include="img\skills.png" />
     <Content Include="Models\Employees.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Employees.generated.cs</LastGenOutput>
+      <LastGenOutput>Employees1.generated.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

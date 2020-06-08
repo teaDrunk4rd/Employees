@@ -5,7 +5,7 @@ using DataModels;
 
 namespace Employees.Models
 {
-    public class EmployeeModel
+    public class EmployeeModel // TODO: убрать этот класс
     {
         public long Id { get; set; }
         public string FullName { get; set; }
