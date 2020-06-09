@@ -33,6 +33,9 @@
                     <DataGridTextColumn Header="Участники" 
                                 Binding="{Binding Path=Participantidfks, Converter={StaticResource CollectionToCountConverter}}" />
                 </DataGrid.Columns>
+                <DataGrid.InputBindings>
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ShowEditForm}" />
+                </DataGrid.InputBindings>
             </DataGrid>
         </DockPanel>
         

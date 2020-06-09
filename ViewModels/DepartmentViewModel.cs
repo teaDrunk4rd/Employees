@@ -81,7 +81,7 @@ namespace Employees.ViewModels
             Mode = WindowMode.Edit;
             Department = (Department) SelectedDepartment.Clone();
         }, 
-        () => Mode == WindowMode.Read && SelectedDepartment != default);
+        () => Mode == WindowMode.Read && SelectedDepartment != null);
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
@@ -104,21 +104,21 @@ namespace Employees.ViewModels
             DBModel.EmployeesDB.Delete(SelectedDepartment);
             Departments.Remove(SelectedDepartment);
             FilteredDepartments.Remove(SelectedDepartment);
-            SelectedDepartment = default;
+            SelectedDepartment = null;
             Clear();
             OnUpdateCollection?.Execute(null);
-        }, () =>  Mode == WindowMode.Read && SelectedDepartment != default);
+        }, () =>  Mode == WindowMode.Read && SelectedDepartment != null);
 
         public ICommand ClearCommand => new DelegateCommand(() =>
         {
             Clear();
-            if (OnSelection != default)
-                OnSelection = default;
+            if (OnSelection != null)
+                OnSelection = null;
         });
 
         private void Clear()
         {
-            Department = default;
+            Department = null;
             Mode = WindowMode.Read;
         }
 
@@ -135,7 +135,7 @@ namespace Employees.ViewModels
             var selectedId = SelectedDepartment?.Id;
             FilteredDepartments =
                 new ObservableCollection<Department>(Departments.Where(d => d.Search(Search)).OrderBy(d => d.Name));
-            if (selectedId != default)
+            if (selectedId != null)
                 SelectedDepartment = FilteredDepartments.FirstOrDefault(d => d.Id == selectedId);
         }
 

@@ -106,7 +106,7 @@ namespace Employees.ViewModels
             UpdatePosition();
             UpdateDepartment();
         }, 
-        () => Mode == WindowMode.Read && SelectedEmployee != default);
+        () => Mode == WindowMode.Read && SelectedEmployee != null);
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
@@ -131,15 +131,15 @@ namespace Employees.ViewModels
             DBModel.EmployeesDB.Delete(SelectedEmployee);
             Employees.Remove(Employees.First(e => e.Id == SelectedEmployee.Id));
             FilteredEmployees.Remove(SelectedEmployee);
-            SelectedEmployee = default;
+            SelectedEmployee = null;
             Clear();
-        }, () =>  Mode == WindowMode.Read && SelectedEmployee != default);
+        }, () =>  Mode == WindowMode.Read && SelectedEmployee != null);
 
         public ICommand ClearCommand => new DelegateCommand(Clear);
         
         public ICommand OpenPositionWindowForAdd => new DelegateCommand(() =>
         {
-            Parent.PositionViewModel.SelectedPosition = default;
+            Parent.PositionViewModel.SelectedPosition = null;
             Parent.PositionViewModel.OpenWindow<PositionViewModel, PositionView>(new DelegateCommand(() =>
             {
                 Employee.Position = Parent.PositionViewModel.SelectedPosition;
@@ -150,7 +150,7 @@ namespace Employees.ViewModels
         
         public ICommand OpenDepartmentWindowForAdd => new DelegateCommand(() =>
         {
-            Parent.DepartmentViewModel.SelectedDepartment = default;
+            Parent.DepartmentViewModel.SelectedDepartment = null;
             Parent.DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentView>(new DelegateCommand(() =>
             {
                 Employee.Department = Parent.DepartmentViewModel.SelectedDepartment;
@@ -161,7 +161,7 @@ namespace Employees.ViewModels
         
         public ICommand OpenSkillsWindowForAdd => new DelegateCommand(() =>
         {
-            Parent.SkillsViewModel.SelectedSkill = default;
+            Parent.SkillsViewModel.SelectedSkill = null;
             Parent.SkillsViewModel.OpenWindow<SkillViewModel, SkillView>(new DelegateCommand(() =>
             {
                 var skillLevelChooserViewModel = new SkillLevelChooserViewModel
@@ -189,15 +189,15 @@ namespace Employees.ViewModels
         public ICommand DeleteSkill => new DelegateCommand(() =>
         {
             Employee.SkillsToDelete.Add((EmployeeSkill) SelectedEmployeeSkill.Clone());
-            SelectedEmployeeSkill = default;
+            SelectedEmployeeSkill = null;
             RaisePropertyChanged(nameof(SelectedEmployeeSkill));
             Employee.UpdateSkills();
-        }, () =>  SelectedEmployeeSkill != default);
+        }, () =>  SelectedEmployeeSkill != null);
 
         private void Clear()
         {
-            Employee = default;
-            if (SelectedEmployee != default)
+            Employee = null;
+            if (SelectedEmployee != null)
             {
                 SelectedEmployee.SkillsToAdd = new List<EmployeeSkill>();
                 SelectedEmployee.SkillsToDelete = new List<EmployeeSkill>();
@@ -224,7 +224,7 @@ namespace Employees.ViewModels
             var selectedId = SelectedEmployee?.Id;
             FilteredEmployees = 
                 new ObservableCollection<Employee>(Employees.Where(e => e.Search(Search)).OrderBy(e => e.FullName));
-            if (selectedId != default)
+            if (selectedId != null)
                 SelectedEmployee = FilteredEmployees.FirstOrDefault(d => d.Id == selectedId);
         }
 
@@ -232,9 +232,9 @@ namespace Employees.ViewModels
         {
             if (Mode == WindowMode.Read) return;
             
-            if (Employee?.Position != default)
+            if (Employee?.Position != null)
                 Employee.Position = Parent.PositionViewModel.Positions.FirstOrDefault(p => p.Id == Employee.Position.Id);
-            else if (Employee?.PositionId != default)
+            else if (Employee?.PositionId != null)
                 Employee.Position = Parent.PositionViewModel.Positions.FirstOrDefault(p => p.Id == Employee.PositionId);
             RaisePropertyChanged(nameof(Employee));
         }
@@ -245,7 +245,7 @@ namespace Employees.ViewModels
             
             if (Employee?.Department != null)
                 Employee.Department = Parent.DepartmentViewModel.Departments.FirstOrDefault(p => p.Id == Employee.Department.Id);
-            else if (Employee?.DepartmentId != default)
+            else if (Employee?.DepartmentId != null)
                 Employee.Department = Parent.DepartmentViewModel.Departments.FirstOrDefault(p => p.Id == Employee.DepartmentId);
             RaisePropertyChanged(nameof(Employee));
         }
@@ -253,7 +253,7 @@ namespace Employees.ViewModels
         private bool CanExecuteUpsertCommand(Employee employee)
             => employee != null && !employee.Surname.IsEmpty() && !employee.Name.IsEmpty() && !employee.Phone.IsEmpty() 
                && !employee.Address.IsEmpty() && !employee.PassportNumberSeries.IsEmpty() && !employee.PassportInfoWhom.IsEmpty() 
-               && employee.PassportInfoWhen != default;
+               && employee.PassportInfoWhen != null;
 
         protected override void RaiseSearchChanged() => UpdateEmployees();
     }

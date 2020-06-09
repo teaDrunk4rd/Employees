@@ -83,30 +83,30 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="34"/>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}"> <!-- TODO: убрать DataContext -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0 0 10 0">
                     <Label Content="Фамилия" />
-                    <TextBox Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Text="{Binding Employee.Surname, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}">
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 0 10 0">
                     <Label Content="Имя" />
-                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Text="{Binding Employee.Name, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0 0 10 0" DataContext="{Binding Employee}">
+                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0 0 10 0">
                     <Label Content="Отчество" />
-                    <TextBox Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Text="{Binding Employee.Patronymic, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <StackPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0 0 10 0" DataContext="{Binding Employee}">
+                <StackPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0 0 10 0">
                     <Label Content="Номер" />
-                    <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" /> <!-- format -->
+                    <TextBox Text="{Binding Employee.Phone, UpdateSourceTrigger=PropertyChanged}" /> <!-- format -->
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 0 10 0">
@@ -131,32 +131,32 @@
 
                 <Button Grid.Row="2" Grid.Column="2" Command="{Binding OpenDepartmentWindowForAdd}" Content="..." VerticalAlignment="Bottom" Padding="6 0" Margin="0 0 10 1" />
 
-                <StackPanel Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" DataContext="{Binding Employee}">
+                <StackPanel Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2">
                     <Label Content="Адрес регистрации" />
-                    <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Text="{Binding Employee.Address, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <StackPanel Grid.Row="1" Grid.Column="3" DataContext="{Binding Employee}" Margin="0 0 10 0">
+                <StackPanel Grid.Row="1" Grid.Column="3" Margin="0 0 10 0">
                     <StackPanel>
                         <Label Content="Серия номер паспорта" />
-                        <TextBox Text="{Binding PassportNumberSeries, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Text="{Binding Employee.PassportNumberSeries, UpdateSourceTrigger=PropertyChanged}" />
                         <!--extensions:TextBoxRegex.Regex="^([0-9]{4}\s{1}[0-9]{6})?$" -->
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel Grid.Row="1" Grid.Column="4" DataContext="{Binding Employee}">
+                <StackPanel Grid.Row="1" Grid.Column="4">
                     <StackPanel>
                         <Label Content="Дата выдачи паспорта" />
                         <Border Style="{StaticResource BasicBorder}" Height="28">
-                            <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding PassportInfoWhen}" Height="28" Margin="5 1" />
+                            <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding Employee.PassportInfoWhen}" Height="28" Margin="5 1" />
                             <!-- кнопка пропадает -->
                         </Border>
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" DataContext="{Binding Employee}">
+                <StackPanel Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2">
                     <Label Content="Кем выдан паспорт" />
-                    <TextBox Text="{Binding PassportInfoWhom, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Text="{Binding Employee.PassportInfoWhom, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
                 <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  Margin="0 10 10 8">

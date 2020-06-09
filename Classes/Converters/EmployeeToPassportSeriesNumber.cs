@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
 
 namespace Employees.Classes.Converters
@@ -11,8 +10,8 @@ namespace Employees.Classes.Converters
         {
             var passportNumberSeries = (string) value;
             return passportNumberSeries != null ? 
-                $"{string.Concat(passportNumberSeries.Take(4))} {string.Concat(passportNumberSeries.Skip(4))}" :
-                "";
+                passportNumberSeries.FormatPassportSeriesNumber() :
+                string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

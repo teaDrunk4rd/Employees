@@ -81,7 +81,7 @@ namespace Employees.ViewModels
             Mode = WindowMode.Edit;
             Skill = (Skill) SelectedSkill.Clone();
         }, 
-        () => Mode == WindowMode.Read && SelectedSkill != default);
+        () => Mode == WindowMode.Read && SelectedSkill != null);
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
@@ -104,21 +104,21 @@ namespace Employees.ViewModels
             DBModel.EmployeesDB.Delete(SelectedSkill);
             Skills.Remove(SelectedSkill);
             FilteredSkills.Remove(SelectedSkill);
-            SelectedSkill = default;
+            SelectedSkill = null;
             Clear();
             OnUpdateCollection?.Execute(null);
-        }, () =>  Mode == WindowMode.Read && SelectedSkill != default);
+        }, () =>  Mode == WindowMode.Read && SelectedSkill != null);
 
         public ICommand ClearCommand => new DelegateCommand(() =>
         {
             Clear();
-            if (OnSelection != default)
-                OnSelection = default;
+            if (OnSelection != null)
+                OnSelection = null;
         });
 
         private void Clear()
         {
-            Skill = default;
+            Skill = null;
             Mode = WindowMode.Read;
         }
 
@@ -135,7 +135,7 @@ namespace Employees.ViewModels
             var selectedId = SelectedSkill?.Id;
             FilteredSkills =
                 new ObservableCollection<Skill>(Skills.Where(d => d.Search(Search)).OrderBy(d => d.Name));
-            if (selectedId != default)
+            if (selectedId != null)
                 SelectedSkill = FilteredSkills.FirstOrDefault(d => d.Id == selectedId);
         }
 

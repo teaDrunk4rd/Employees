@@ -81,7 +81,7 @@ namespace Employees.ViewModels
             Mode = WindowMode.Edit;
             Position = (Position) SelectedPosition.Clone();
         }, 
-        () => Mode == WindowMode.Read && SelectedPosition != default);
+        () => Mode == WindowMode.Read && SelectedPosition != null);
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
@@ -104,21 +104,21 @@ namespace Employees.ViewModels
             DBModel.EmployeesDB.Delete(SelectedPosition);
             Positions.Remove(SelectedPosition);
             FilteredPositions.Remove(SelectedPosition);
-            SelectedPosition = default;
+            SelectedPosition = null;
             Clear();
             OnUpdateCollection?.Execute(null);
-        }, () =>  Mode == WindowMode.Read && SelectedPosition != default);
+        }, () =>  Mode == WindowMode.Read && SelectedPosition != null);
 
         public ICommand ClearCommand => new DelegateCommand(() =>
         {
             Clear();
-            if (OnSelection != default)
-                OnSelection = default;
+            if (OnSelection != null)
+                OnSelection = null;
         });
 
         private void Clear()
         {
-            Position = default;
+            Position = null;
             Mode = WindowMode.Read;
         }
 
@@ -135,7 +135,7 @@ namespace Employees.ViewModels
             var selectedId = SelectedPosition?.Id;
             FilteredPositions = 
                 new ObservableCollection<Position>(Positions.Where(d => d.Search(Search)).OrderBy(d => d.Name));
-            if (selectedId != default)
+            if (selectedId != null)
                 SelectedPosition = FilteredPositions.FirstOrDefault(d => d.Id == selectedId);
         }
 

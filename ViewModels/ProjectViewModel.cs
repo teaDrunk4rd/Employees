@@ -81,7 +81,7 @@ namespace Employees.ViewModels
             Mode = WindowMode.Edit;
             Project = (Project) SelectedProject.Clone();
         }, 
-        () => Mode == WindowMode.Read && SelectedProject != default);
+        () => Mode == WindowMode.Read && SelectedProject != null);
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
@@ -103,15 +103,15 @@ namespace Employees.ViewModels
             DBModel.EmployeesDB.Delete(SelectedProject);
             Projects.Remove(SelectedProject);
             FilteredProjects.Remove(SelectedProject);
-            SelectedProject = default;
+            SelectedProject = null;
             Clear();
-        }, () =>  Mode == WindowMode.Read && SelectedProject != default);
+        }, () =>  Mode == WindowMode.Read && SelectedProject != null);
 
         public ICommand ClearCommand => new DelegateCommand(Clear);
 
         private void Clear()
         {
-            Project = default;
+            Project = null;
             Mode = WindowMode.Read;
         }
 
@@ -128,7 +128,7 @@ namespace Employees.ViewModels
             var selectedId = SelectedProject?.Id;
             FilteredProjects =
                 new ObservableCollection<Project>(Projects.Where(d => d.Search(Search)).OrderBy(d => d.Name));
-            if (selectedId != default)
+            if (selectedId != null)
                 SelectedProject = FilteredProjects.FirstOrDefault(d => d.Id == selectedId);
         }
 

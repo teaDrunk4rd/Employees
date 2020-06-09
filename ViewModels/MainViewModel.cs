@@ -28,25 +28,25 @@ namespace Employees.ViewModels
         
         public ICommand OpenEmployeeWindow => new DelegateCommand(() =>
         {
-            EmployeeViewModel.SelectedEmployee = default;
+            EmployeeViewModel.SelectedEmployee = null;
             EmployeeViewModel.OpenWindow<EmployeeViewModel, EmployeeView>();
         });
         
         public ICommand OpenPositionWindow => new DelegateCommand(() =>
         {
-            PositionViewModel.SelectedPosition = default;
+            PositionViewModel.SelectedPosition = null;
             PositionViewModel.OpenWindow<PositionViewModel, PositionView>();
         });
         
         public ICommand OpenDepartmentWindow => new DelegateCommand(() =>
         {
-            DepartmentViewModel.SelectedDepartment = default;
+            DepartmentViewModel.SelectedDepartment = null;
             DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentView>();
         });
         
         public ICommand OpenSkillWindow => new DelegateCommand(() =>
         {
-            SkillsViewModel.SelectedSkill = default;
+            SkillsViewModel.SelectedSkill = null;
             SkillsViewModel.OpenWindow<SkillViewModel, SkillView>();
         });
     }

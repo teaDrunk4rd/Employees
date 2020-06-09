@@ -11,24 +11,25 @@ namespace DataModels
 {
     public partial class Employee : ViewModelBase, ICloneable, ISearchable
     {
-        public List<EmployeeSkill> SkillsToAdd = new List<EmployeeSkill>();
-        public List<EmployeeSkill> SkillsToDelete = new List<EmployeeSkill>();
+        public string FullName => $"{Surname} {Name} {Patronymic}";
+        
+        public List<EmployeeSkill> SkillsToAdd { get; set; } = new List<EmployeeSkill>();
+        
+        public List<EmployeeSkill> SkillsToDelete { get; set; } = new List<EmployeeSkill>();
 
         public ObservableCollection<EmployeeSkill> Skills { get; set; }
-
-        public string FullName => $"{Surname} {Name} {Patronymic}";
 
         public void UpdateSkills()
         {
             var skills = new List<EmployeeSkill>();
-            if (!Skillidfks.Equals(default) && !SkillsToAdd.Equals(default))
+            if (!Skillidfks.IsEmpty() && !SkillsToAdd.IsEmpty())
                 skills = Skillidfks.Union(SkillsToAdd).ToList();
-            else if (!Skillidfks.Equals(default))
+            else if (!Skillidfks.IsEmpty())
                 skills = Skillidfks.ToList();
-            else if (!SkillsToAdd.Equals(default))
+            else if (!SkillsToAdd.IsEmpty())
                 skills = SkillsToAdd;
-            Skills = new ObservableCollection<EmployeeSkill>(skills.Where(es =>
-                !SkillsToDelete.Any(s => s.SkillId == es.SkillId && s.EmployeeId == es.EmployeeId))); // TODO: перенести часть логики в EmployeeSkill
+            
+            Skills = new ObservableCollection<EmployeeSkill>(skills.Where(es => SkillsToDelete.All(s => s != es)));
             RaisePropertyChanged(nameof(Skills));
         }
 
@@ -36,7 +37,7 @@ namespace DataModels
         {
             SkillsToAdd.ForEach(s =>
             {
-                if (SkillsToDelete.Any(sd => sd.SkillId == s.SkillId && sd.EmployeeId == s.EmployeeId)) return; // TODO: перенести часть логики в EmployeeSkill
+                if (SkillsToDelete.Any(sd => sd == s)) return;
                 if (id != 0)
                     s.EmployeeId = id;
                 DBModel.Context.Insert(s);
