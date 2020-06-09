@@ -16,6 +16,8 @@ namespace DataModels
 
         public ObservableCollection<EmployeeSkill> Skills { get; set; }
 
+        public string FullName => $"{Surname} {Name} {Patronymic}";
+
         public void UpdateSkills()
         {
             var skills = new List<EmployeeSkill>();
@@ -49,11 +51,9 @@ namespace DataModels
         public object Clone() => MemberwiseClone();
         
         public bool Search(string search) 
-            => search.IsEmpty() || FullName().Search(search) || Phone.Search(search) 
+            => search.IsEmpty() || FullName.Search(search) || Phone.Search(search) 
                || Address.Search(search) || PassportNumberSeries.Search(search) 
                || PassportInfoWhom.Search(search) || PassportInfoWhen.Search(search) 
                || Department.Name.Search(search) || Position.Name.Search(search);
-
-        public string FullName() => $"{Surname} {Name} {Patronymic}";
     }
 }

@@ -8,13 +8,9 @@ namespace Employees.Classes.Converters
     public class CollectionToCountConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return ((ICollection) value)?.Count ?? 0;
-        }
+            => ((ICollection) value)?.Count ?? 0;
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => throw new NotImplementedException();
     }
 }

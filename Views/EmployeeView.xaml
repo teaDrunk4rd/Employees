@@ -10,6 +10,8 @@
     
     <Window.Resources>
         <converters:WindowModeToVisibilityConverter x:Key="ModeToVisibilityConverter" />
+        <converters:CollectionToCountConverter x:Key="CollectionToCountConverter" />
+        <converters:EmployeeToPassportSeriesNumber x:Key="EmployeeToPassportSeriesNumber" />
     </Window.Resources>
 
     <Grid>
@@ -41,17 +43,29 @@
                 </Grid>
             </Expander>
         
-            <DataGrid ItemsSource="{Binding FilteredEmployees}" SelectedItem="{Binding SelectedEmployeeModel}"
+            <DataGrid ItemsSource="{Binding FilteredEmployees}" SelectedItem="{Binding SelectedEmployee}"
                       Style="{StaticResource EmptyDataMessage}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ФИО" Binding="{Binding Path=FullName}" />
                     <DataGridTextColumn Header="Должность" Binding="{Binding Path=Position.Name}" />
                     <DataGridTextColumn Header="Отдел" Binding="{Binding Path=Department.Name}" />
-                    <DataGridTextColumn Header="Навыки" Binding="{Binding Path=SkillsCount}" />
+                    <DataGridTextColumn Header="Навыки"
+                                Binding="{Binding Path=Skillidfks, Converter={StaticResource CollectionToCountConverter}}" />
                     <DataGridTextColumn Header="Номер" Binding="{Binding Path=Phone}" />
                     <DataGridTextColumn Header="Адрес" Binding="{Binding Path=Address}" />
-                    <DataGridTextColumn Header="Серия номер паспорта" Binding="{Binding Path=PassportNumberSeries}" />
-                    <DataGridTextColumn Header="Паспорт выдан" Binding="{Binding Path=PassportInfo}" />
+                    <DataGridTextColumn Header="Серия номер паспорта" 
+                                        Binding="{Binding Path=PassportNumberSeries, Converter={StaticResource EmployeeToPassportSeriesNumber}}" />
+                    <DataGridTemplateColumn Header="Паспорт выдан">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=PassportInfoWhen, StringFormat={}{0:dd.MM.yyyy}}"/>
+                                    <TextBlock Text=" "/>
+                                    <TextBlock Text="{Binding Path=PassportInfoWhom}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
                 <DataGrid.InputBindings>
                     <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ShowEditForm}" />

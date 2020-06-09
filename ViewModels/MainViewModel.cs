@@ -28,7 +28,7 @@ namespace Employees.ViewModels
         
         public ICommand OpenEmployeeWindow => new DelegateCommand(() =>
         {
-            EmployeeViewModel.SelectedEmployeeModel = default;
+            EmployeeViewModel.SelectedEmployee = default;
             EmployeeViewModel.OpenWindow<EmployeeViewModel, EmployeeView>();
         });
         

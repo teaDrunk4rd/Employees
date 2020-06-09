@@ -20,7 +20,7 @@ namespace Employees.ViewModels
         private Employee _selectedEmployee;
         private Employee _employee;
         private List<Employee> _employees;
-        private ObservableCollection<EmployeeModel> _filteredEmployees;
+        private ObservableCollection<Employee> _filteredEmployees;
 
         public Employee SelectedEmployee
         {
@@ -30,16 +30,6 @@ namespace Employees.ViewModels
                 if (Equals(_selectedEmployee, value)) return;
                 _selectedEmployee = value;
                 RaisePropertyChanged(nameof(SelectedEmployee));
-            }
-        }
-
-        public EmployeeModel SelectedEmployeeModel
-        {
-            get => FilteredEmployees.FirstOrDefault(e => e.Id == _selectedEmployee?.Id);
-            set
-            {
-                SelectedEmployee = value?.GetEmployee();
-                RaisePropertyChanged(nameof(SelectedEmployeeModel));
             }
         }
 
@@ -67,7 +57,7 @@ namespace Employees.ViewModels
             }
         }
 
-        public ObservableCollection<EmployeeModel> FilteredEmployees
+        public ObservableCollection<Employee> FilteredEmployees
         {
             get => _filteredEmployees;
             set
@@ -95,10 +85,8 @@ namespace Employees.ViewModels
             });
             
             Employees = DBModel.EmployeesTable.ToList();
-            FilteredEmployees = new ObservableCollection<EmployeeModel>(Employees.Where(e => e.Search(Search))
-                .Select(e => new EmployeeModel(e))
-                .OrderBy(e => e.FullName)
-            );
+            FilteredEmployees = 
+                new ObservableCollection<Employee>(Employees.Where(e => e.Search(Search)).OrderBy(e => e.FullName));
         }
 
         public ICommand ShowAddForm => new DelegateCommand(() =>
@@ -125,7 +113,7 @@ namespace Employees.ViewModels
             var id = DBModel.Context.InsertWithInt64Identity(Employee);
             Employee.SaveSkills(id);
             ClearWithUpdate();
-            SelectedEmployeeModel = FilteredEmployees.First(d => d.Id == id);
+            SelectedEmployee = FilteredEmployees.First(d => d.Id == id);
         }, () => CanExecuteUpsertCommand(Employee));
 
         public override ICommand EditCommand => new DelegateCommand(() =>
@@ -142,7 +130,7 @@ namespace Employees.ViewModels
                 return;
             DBModel.EmployeesDB.Delete(SelectedEmployee);
             Employees.Remove(Employees.First(e => e.Id == SelectedEmployee.Id));
-            FilteredEmployees.Remove(SelectedEmployeeModel);
+            FilteredEmployees.Remove(SelectedEmployee);
             SelectedEmployee = default;
             Clear();
         }, () =>  Mode == WindowMode.Read && SelectedEmployee != default);
@@ -233,13 +221,11 @@ namespace Employees.ViewModels
 
         private void UpdateEmployees()
         {
-            var selectedId = SelectedEmployeeModel?.Id;
-            FilteredEmployees = new ObservableCollection<EmployeeModel>(Employees.Where(e => e.Search(Search))
-                .Select(e => new EmployeeModel(e))
-                .OrderBy(e => e.FullName)
-            );
+            var selectedId = SelectedEmployee?.Id;
+            FilteredEmployees = 
+                new ObservableCollection<Employee>(Employees.Where(e => e.Search(Search)).OrderBy(e => e.FullName));
             if (selectedId != default)
-                SelectedEmployeeModel = FilteredEmployees.FirstOrDefault(d => d.Id == selectedId);
+                SelectedEmployee = FilteredEmployees.FirstOrDefault(d => d.Id == selectedId);
         }
 
         private void UpdatePosition()
