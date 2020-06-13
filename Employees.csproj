@@ -113,6 +113,7 @@
     <Compile Include="Classes\Converters\WindowModeToVisibilityConverter.cs" />
     <Compile Include="Classes\Extensions.cs" />
     <Compile Include="Classes\WindowMode.cs" />
+    <Compile Include="Models\Addition\ProjectParticipant.cs" />
     <Compile Include="Models\DBModel.cs" />
     <Compile Include="Models\Employees.generated.cs">
       <AutoGen>True</AutoGen>
@@ -120,12 +121,13 @@
       <DependentUpon>Employees.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ISearchable.cs" />
-    <Compile Include="Models\ModelsAddition\Department.cs" />
-    <Compile Include="Models\ModelsAddition\Employee.cs" />
-    <Compile Include="Models\ModelsAddition\EmployeeSkill.cs" />
-    <Compile Include="Models\ModelsAddition\Position.cs" />
-    <Compile Include="Models\ModelsAddition\Project.cs" />
-    <Compile Include="Models\ModelsAddition\Skill.cs" />
+    <Compile Include="Models\Addition\Department.cs" />
+    <Compile Include="Models\Addition\Employee.cs" />
+    <Compile Include="Models\Addition\EmployeeSkill.cs" />
+    <Compile Include="Models\Addition\Position.cs" />
+    <Compile Include="Models\Addition\Project.cs" />
+    <Compile Include="Models\Addition\ProjectRequiredSkill.cs" />
+    <Compile Include="Models\Addition\Skill.cs" />
     <Compile Include="ViewModels\Classes\LookupViewModel.cs" />
     <Compile Include="ViewModels\Classes\ModalViewModel.cs" />
     <Compile Include="ViewModels\Classes\SearchableViewModel.cs" />

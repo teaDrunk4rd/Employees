@@ -68,7 +68,7 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
                 <DataGrid.InputBindings>
-                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ShowEditForm}" />
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding OnSelection}" />
                 </DataGrid.InputBindings>
             </DataGrid>
         </DockPanel>

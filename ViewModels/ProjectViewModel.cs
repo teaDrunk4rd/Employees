@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -8,6 +9,7 @@ using DevExpress.Mvvm;
 using Employees.Classes;
 using Employees.Models;
 using Employees.ViewModels.Classes;
+using Employees.Views;
 using LinqToDB;
 
 namespace Employees.ViewModels
@@ -16,6 +18,8 @@ namespace Employees.ViewModels
     {
         private Project _selectedProject;
         private Project _project;
+        private ProjectRequiredSkill _projectRequiredSkill;
+        private ProjectParticipant _projectParticipant;
         private List<Project> _projects;
         private ObservableCollection<Project> _filteredProjects;
 
@@ -41,6 +45,28 @@ namespace Employees.ViewModels
             }
         }
 
+        public ProjectRequiredSkill SelectedProjectRequiredSkill
+        {
+            get => _projectRequiredSkill;
+            set
+            {
+                if (Equals(_projectRequiredSkill, value)) return;
+                _projectRequiredSkill = value;
+                RaisePropertyChanged(nameof(SelectedProjectRequiredSkill));
+            }
+        }
+
+        public ProjectParticipant SelectedProjectParticipant
+        {
+            get => _projectParticipant;
+            set
+            {
+                if (Equals(_projectParticipant, value)) return;
+                _projectParticipant = value;
+                RaisePropertyChanged(nameof(SelectedProjectParticipant));
+            }
+        }
+
         public List<Project> Projects
         {
             get => _projects;
@@ -62,30 +88,41 @@ namespace Employees.ViewModels
                 RaisePropertyChanged(nameof(FilteredProjects));
             }
         }
+        
+        private MainViewModel Parent { get; set; }
 
-        public ProjectViewModel()
+        public ProjectViewModel(MainViewModel parent)
         {
+            Parent = parent;
+            
             Projects = DBModel.ProjectsTable.ToList();
             FilteredProjects =
                 new ObservableCollection<Project>(Projects.Where(d => d.Search(Search)).OrderBy(d => d.Name));
         }
 
-        public ICommand ShowAddForm => new DelegateCommand(() =>
+        public override ICommand ShowAddForm => new DelegateCommand(() =>
         {
             Mode = WindowMode.Add;
-            Project = new Project();
+            Project = new Project {StartDate = DateTime.Now, FinishDate = DateTime.Now};
+            Project.UpdateSkills();
         }, () =>  Mode == WindowMode.Read);
 
-        public ICommand ShowEditForm => new DelegateCommand(() => 
+        public override ICommand ShowEditForm => new DelegateCommand(() => 
         {
             Mode = WindowMode.Edit;
             Project = (Project) SelectedProject.Clone();
+            Project.LoadSkills();
+            Project.LoadParticipants();
+            Project.UpdateSkills();
+            Project.UpdateParticipants();
         }, 
         () => Mode == WindowMode.Read && SelectedProject != null);
 
         public override ICommand AddCommand => new DelegateCommand(() =>
         {
             var id = DBModel.Context.InsertWithInt64Identity(Project);
+            Project.SaveSkills(id);
+            Project.SaveParticipants(id);
             ClearWithUpdate();
             SelectedProject = FilteredProjects.First(d => d.Id == id);
         }, () => CanExecuteUpsertCommand(Project));
@@ -93,6 +130,8 @@ namespace Employees.ViewModels
         public override ICommand EditCommand => new DelegateCommand(() =>
         {
             DBModel.EmployeesDB.Update(Project);
+            Project.SaveSkills();
+            Project.SaveParticipants();
             ClearWithUpdate();
         }, () => CanExecuteUpsertCommand(Project));
 
@@ -108,6 +147,51 @@ namespace Employees.ViewModels
         }, () =>  Mode == WindowMode.Read && SelectedProject != null);
 
         public ICommand ClearCommand => new DelegateCommand(Clear);
+        
+        public ICommand OpenSkillsWindowForAdd => new DelegateCommand(() =>
+        {
+            Parent.SkillsViewModel.SelectedSkill = null;
+            Parent.SkillsViewModel.OpenWindow<SkillViewModel, SkillView>(new DelegateCommand(() =>
+            {
+                var skillLevelChooserViewModel = new SkillLevelChooserViewModel { SkillName = Parent.SkillsViewModel.SelectedSkill.Name };
+                skillLevelChooserViewModel.OpenModal<SkillLevelChooserViewModel, SkillLevelChooserView>(
+                    new DelegateCommand(() =>
+                    { // TODO: убрать возможность выбора одного и того же навыка
+                        skillLevelChooserViewModel.CloseWindow();
+                        Parent.SkillsViewModel.CloseWindow();
+                        
+                        Project.AddSkill(Project, Parent.SkillsViewModel.SelectedSkill, skillLevelChooserViewModel.Level);
+                        Project.UpdateSkills();
+                    })
+                );
+            }));
+        });
+
+        public ICommand DeleteSkill => new DelegateCommand(() =>
+        {
+            Project.SkillsToDelete.Add((ProjectRequiredSkill) SelectedProjectRequiredSkill.Clone());
+            SelectedProjectRequiredSkill = null;
+            Project.UpdateSkills();
+        }, () =>  SelectedProjectRequiredSkill != null);
+        
+        public ICommand OpenEmployeesWindowForAdd => new DelegateCommand(() =>
+        {
+            Parent.EmployeeViewModel.SelectedEmployee = null;
+            Parent.EmployeeViewModel.OpenWindow<EmployeeViewModel, EmployeeView>(new DelegateCommand(() =>
+            {
+                Parent.EmployeeViewModel.CloseWindow();
+                
+                Project.AddParticipant(Project, Parent.EmployeeViewModel.SelectedEmployee);
+                Project.UpdateParticipants();
+            }));
+        });
+
+        public ICommand DeleteParticipant => new DelegateCommand(() =>
+        {
+            Project.ParticipantsToDelete.Add((ProjectParticipant) SelectedProjectParticipant.Clone());
+            SelectedProjectParticipant = null;
+            Project.UpdateParticipants();
+        }, () =>  SelectedProjectParticipant != null);
 
         private void Clear()
         {

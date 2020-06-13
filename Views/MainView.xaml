@@ -7,20 +7,11 @@
         xmlns:vm="clr-namespace:Employees.ViewModels"
         xmlns:views="clr-namespace:Employees.Views"
         mc:Ignorable="d"
-        Title="Учет сотрудников" Height="400" Width="800" MinHeight="350" MinWidth="600" Background="#fafafa">
+        Title="Проекты" Height="525" Width="850" MinHeight="350" MinWidth="700" Background="#fafafa">
 
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
-    
-    <Window.Resources>
-        <Style TargetType="RibbonButton" x:Key="SkyBlueRibbonButton">
-            <Setter Property="MouseOverBackground" Value="SkyBlue" />
-            <Setter Property="PressedBorderBrush" Value="SkyBlue" />
-            <Setter Property="PressedBackground" Value="SkyBlue" />
-            <Setter Property="MouseOverBorderBrush" Value="SkyBlue" />
-        </Style>
-    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>

@@ -2,6 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:svgc="http://sharpvectors.codeplex.com/svgc/">
     <!-- TODO: Перенести цвета в одно место -->
+    
+    
+    <Style TargetType="RibbonButton" x:Key="SkyBlueRibbonButton">
+        <Setter Property="MouseOverBackground" Value="SkyBlue" />
+        <Setter Property="PressedBorderBrush" Value="SkyBlue" />
+        <Setter Property="PressedBackground" Value="SkyBlue" />
+        <Setter Property="MouseOverBorderBrush" Value="SkyBlue" />
+    </Style>
 
     <Style TargetType="GroupBox">
         <Setter Property="Margin" Value="10" />
@@ -57,6 +65,17 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+    
+    <!-- <Style TargetType="DataGrid" x:Key="ToolTipColumns" BasedOn="{StaticResource EmptyDataMessage}"> -->
+    <!--     <Setter Property="DataGridTextColumn.CellStyle"> -->
+    <!--         <Setter.Value> --> <!-- TODO: tooltip в кол-ве навыков, участников -->
+    <!--             <Style TargetType="DataGridCell"> -->
+    <!--                 <Setter Property="ToolTip" Value="{Binding Name}" /> -->
+    <!--             </Style> -->
+    <!--         </Setter.Value> -->
+    <!--     </Setter> -->
+    <!-- </Style> -->
 
 
     <Style TargetType="StackPanel" x:Key="BottomButtons">
@@ -122,6 +141,11 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    
+    
+    <Style TargetType="Slider" BasedOn="{StaticResource {x:Type Slider}}">
+        <Setter Property="Foreground" Value="RoyalBlue"/>
     </Style>
 
 </ResourceDictionary>

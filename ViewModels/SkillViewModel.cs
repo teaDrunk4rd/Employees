@@ -70,13 +70,13 @@ namespace Employees.ViewModels
                 new ObservableCollection<Skill>(Skills.Where(d => d.Search(Search)).OrderBy(d => d.Name));
         }
 
-        public ICommand ShowAddForm => new DelegateCommand(() =>
+        public override ICommand ShowAddForm => new DelegateCommand(() =>
         {
             Mode = WindowMode.Add;
             Skill = new Skill();
         }, () =>  Mode == WindowMode.Read);
 
-        public ICommand ShowEditForm => new DelegateCommand(() => 
+        public override ICommand ShowEditForm => new DelegateCommand(() => 
         {
             Mode = WindowMode.Edit;
             Skill = (Skill) SelectedSkill.Clone();
@@ -109,12 +109,7 @@ namespace Employees.ViewModels
             OnUpdateCollection?.Execute(null);
         }, () =>  Mode == WindowMode.Read && SelectedSkill != null);
 
-        public ICommand ClearCommand => new DelegateCommand(() =>
-        {
-            Clear();
-            if (OnSelection != null)
-                OnSelection = null;
-        });
+        public ICommand ClearCommand => new DelegateCommand(Clear);
 
         private void Clear()
         {

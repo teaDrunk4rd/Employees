@@ -1,6 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System.Linq;
+using System.Windows.Input;
 using DevExpress.Mvvm;
 using Employees.Classes;
+using Employees.Models;
 using Employees.Views;
 
 namespace Employees.ViewModels
@@ -23,7 +25,17 @@ namespace Employees.ViewModels
             DepartmentViewModel = new DepartmentViewModel();
             SkillsViewModel = new SkillViewModel();
             EmployeeViewModel = new EmployeeViewModel(this);
-            ProjectViewModel = new ProjectViewModel();
+            PositionViewModel.OnUpdateCollection = new DelegateCommand(() => // TODO: превратить в initialize
+            {
+                EmployeeViewModel.Employees = DBModel.EmployeesTable.ToList();
+                EmployeeViewModel.UpdateEverything();
+            });
+            DepartmentViewModel.OnUpdateCollection = new DelegateCommand(() =>
+            {
+                EmployeeViewModel.Employees = DBModel.EmployeesTable.ToList();
+                EmployeeViewModel.UpdateEverything();
+            }); // TODO: skills OnUpdateCollection
+            ProjectViewModel = new ProjectViewModel(this);
         }
         
         public ICommand OpenEmployeeWindow => new DelegateCommand(() =>

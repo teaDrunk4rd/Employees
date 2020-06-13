@@ -25,28 +25,112 @@
             <DataGrid ItemsSource="{Binding FilteredProjects}" SelectedItem="{Binding SelectedProject}"
                       Style="{StaticResource EmptyDataMessage}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" />
-                    <DataGridTextColumn Header="Дата начала" Binding="{Binding Path=StartDate, StringFormat={}{0:dd.MM.yyyy}}" />
-                    <DataGridTextColumn Header="Дата завершения" Binding="{Binding Path=FinishDate, StringFormat={}{0:dd.MM.yyyy}}" />
-                    <DataGridTextColumn Header="Навыки" 
+                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" Width="*" />
+                    <DataGridTextColumn Header="Дата начала" Width="*"
+                                        Binding="{Binding Path=StartDate, StringFormat={}{0:dd.MM.yyyy}}" />
+                    <DataGridTextColumn Header="Дата окончания" Width="*" 
+                                        Binding="{Binding Path=FinishDate, StringFormat={}{0:dd.MM.yyyy}}" />
+                    <DataGridTextColumn Header="Навыки" Width="*"
                                 Binding="{Binding Path=Requiredskillsidfks, Converter={StaticResource CollectionToCountConverter}}" />
-                    <DataGridTextColumn Header="Участники" 
+                    <DataGridTextColumn Header="Участники" Width="*"
                                 Binding="{Binding Path=Participantidfks, Converter={StaticResource CollectionToCountConverter}}" />
                 </DataGrid.Columns>
                 <DataGrid.InputBindings>
-                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ShowEditForm}" />
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding OnSelection}" />
                 </DataGrid.InputBindings>
             </DataGrid>
         </DockPanel>
         
 
         <GroupBox Grid.Column="0" Header="{Binding FormName}" Visibility="{Binding FormVisibility}">
-            <Grid>
-                <StackPanel>
-                    <Label Content="Наименование" />
-                    <TextBox Text="{Binding Project.Name, UpdateSourceTrigger=PropertyChanged}" />
-                </StackPanel>
-                <StackPanel Style="{StaticResource BottomButtons}">
+            <Grid Margin="6 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0 0 10 0">
+                        <Label Content="Наименование" />
+                        <TextBox Text="{Binding Project.Name, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0 0 10 0">
+                        <StackPanel>
+                            <Label Content="Дата начала" />
+                            <Border Style="{StaticResource BasicBorder}" Height="28">
+                                <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding Project.StartDate}" Height="28" Margin="5 1" />
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <StackPanel>
+                            <Label Content="Дата окончания" />
+                            <Border Style="{StaticResource BasicBorder}" Height="28">
+                                <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding Project.FinishDate}" Height="28" Margin="5 1" />
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="24" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="24" />
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel Grid.Column="0" Margin="0 5 5 10">
+                        <!-- TODO: сделать отдельным компонентом -->
+                        <Label DockPanel.Dock="Top" Content="Требуемые навыки специалистов" />
+                        <Border Style="{StaticResource BasicBorder}" Padding="1 0">
+                            <DataGrid Style="{StaticResource EmptyDataMessage}" Margin="0"
+                                  SelectedItem="{Binding SelectedProjectRequiredSkill}"
+                                  ItemsSource="{Binding Project.Skills}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Skill.Name}" Width="*" FontSize="11" />
+                                    <DataGridTextColumn Header="Уровень" Binding="{Binding Path=Level}" FontSize="12" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </DockPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="0 30 0 0">
+                        <Button Command="{Binding OpenSkillsWindowForAdd}" Content="+" Padding="8 0 8 2" />
+                        <Button Command="{Binding DeleteSkill}" Content="-" Padding="8 0 8 2" Margin="0 8" />
+                    </StackPanel>
+
+                    <DockPanel Grid.Column="2" Margin="10 5 5 10">
+                        <!-- TODO: сделать отдельным компонентом -->
+                        <Label DockPanel.Dock="Top" Content="Участники проекта" />
+                        <Border Style="{StaticResource BasicBorder}" Padding="1 0">
+                            <DataGrid Style="{StaticResource EmptyDataMessage}" Margin="0"
+                                  SelectedItem="{Binding SelectedProjectParticipant}"
+                                  ItemsSource="{Binding Project.Participants}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Участник" Binding="{Binding Path=Employee.SurnameInitials}" Width="*" FontSize="11" />
+                                    <!-- <DataGridTextColumn Header="Навыки" Binding="{Binding Path=Level}" FontSize="11" /> -->
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </DockPanel>
+
+                    <StackPanel Orientation="Vertical" Grid.Column="4" Margin="0 30 0 0">
+                        <Button Command="{Binding OpenEmployeesWindowForAdd}" Content="+" Padding="8 0 8 2" />
+                        <Button Command="{Binding DeleteParticipant}" Content="-" Padding="8 0 8 2" Margin="0 8" />
+                    </StackPanel>
+                </Grid>
+                
+                <StackPanel Grid.Row="2" Style="{StaticResource BottomButtons}">
                     <Button Command="{Binding ClearCommand}" Content="Отмена" Margin="4 0" />
                     <Button Command="{Binding OkCommand}" Content="ОК" Margin="4 0" />
                 </StackPanel>

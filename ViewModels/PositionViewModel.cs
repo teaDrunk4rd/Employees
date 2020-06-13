@@ -70,13 +70,13 @@ namespace Employees.ViewModels
                 new ObservableCollection<Position>(Positions.Where(p => p.Search(Search)).OrderBy(p => p.Name));
         }
 
-        public ICommand ShowAddForm => new DelegateCommand(() =>
+        public override ICommand ShowAddForm => new DelegateCommand(() =>
         {
             Mode = WindowMode.Add;
             Position = new Position();
         }, () =>  Mode == WindowMode.Read);
 
-        public ICommand ShowEditForm => new DelegateCommand(() =>
+        public override ICommand ShowEditForm => new DelegateCommand(() =>
         {
             Mode = WindowMode.Edit;
             Position = (Position) SelectedPosition.Clone();
@@ -109,12 +109,7 @@ namespace Employees.ViewModels
             OnUpdateCollection?.Execute(null);
         }, () =>  Mode == WindowMode.Read && SelectedPosition != null);
 
-        public ICommand ClearCommand => new DelegateCommand(() =>
-        {
-            Clear();
-            if (OnSelection != null)
-                OnSelection = null;
-        });
+        public ICommand ClearCommand => new DelegateCommand(Clear);
 
         private void Clear()
         {
