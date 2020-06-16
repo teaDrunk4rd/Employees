@@ -28,12 +28,12 @@ namespace DataModels
             Skillidfks.ForEach(es => es.Skill = DBModel.SkillsTable.Find(es.SkillId));
         }
 
-        public void AddSkill(Employee employee, Skill skill, short level)
+        public void AddSkill( Skill skill, short level)
         {
             var employeeSkill = new EmployeeSkill
             {
-                Employee = employee,
-                EmployeeId = employee.Id,
+                Employee = this,
+                EmployeeId = Id,
                 Skill = skill,
                 SkillId = skill.Id,
                 Level = level

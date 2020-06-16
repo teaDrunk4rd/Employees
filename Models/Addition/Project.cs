@@ -30,12 +30,12 @@ namespace DataModels
             Participantidfks.ForEach(p => p.Employee = DBModel.EmployeesTable.Find(p.EmployeeId));
         }
 
-        public void AddSkill(Project project, Skill skill, short level)
+        public void AddSkill(Skill skill, short level)
         {
             var requiredSkill = new ProjectRequiredSkill
             {
-                Project = project, 
-                ProjectId = project.Id,
+                Project = this, 
+                ProjectId = Id,
                 Skill = skill,
                 SkillId = skill.Id,
                 Level = level
@@ -47,14 +47,14 @@ namespace DataModels
                 SkillsToDelete.RemoveAt(index);
         }
 
-        public void AddParticipant(Project project, Employee employee)
+        public void AddParticipant(Employee employee)
         {
             var participant = new ProjectParticipant
             {
+                Project = this, 
+                ProjectId = Id,
                 Employee = employee,
-                EmployeeId = employee.Id,
-                Project = project,
-                ProjectId = project.Id
+                EmployeeId = employee.Id
             };
             var index = ParticipantsToDelete.IndexOf(s => s == participant);
             if (index == -1)

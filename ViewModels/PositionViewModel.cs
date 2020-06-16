@@ -121,11 +121,11 @@ namespace Employees.ViewModels
         {
             Clear();
             Positions = DBModel.PositionsTable.ToList();
-            UpdatePositions();
+            UpdateCollection();
             OnUpdateCollection?.Execute(null);
         }
 
-        private void UpdatePositions()
+        public override void UpdateCollection()
         {
             var selectedId = SelectedPosition?.Id;
             FilteredPositions = 
@@ -137,7 +137,5 @@ namespace Employees.ViewModels
         private bool CanExecuteUpsertCommand(Position position)
             => position != null && !position.Name.IsEmpty() &&
                !Positions.Any(d => d.Name == position.Name && d.Id != position.Id);
-
-        protected override void RaiseSearchChanged() => UpdatePositions();
     }
 }

@@ -151,16 +151,17 @@ namespace Employees.ViewModels
         public ICommand OpenSkillsWindowForAdd => new DelegateCommand(() =>
         {
             Parent.SkillsViewModel.SelectedSkill = null;
+            Parent.SkillsViewModel.IdFilterList = Project.Skills.Select(x => x.SkillId);
             Parent.SkillsViewModel.OpenWindow<SkillViewModel, SkillView>(new DelegateCommand(() =>
             {
                 var skillLevelChooserViewModel = new SkillLevelChooserViewModel { SkillName = Parent.SkillsViewModel.SelectedSkill.Name };
                 skillLevelChooserViewModel.OpenModal<SkillLevelChooserViewModel, SkillLevelChooserView>(
                     new DelegateCommand(() =>
-                    { // TODO: убрать возможность выбора одного и того же навыка
+                    {
                         skillLevelChooserViewModel.CloseWindow();
                         Parent.SkillsViewModel.CloseWindow();
                         
-                        Project.AddSkill(Project, Parent.SkillsViewModel.SelectedSkill, skillLevelChooserViewModel.Level);
+                        Project.AddSkill(Parent.SkillsViewModel.SelectedSkill, skillLevelChooserViewModel.Level);
                         Project.UpdateSkills();
                     })
                 );
@@ -177,11 +178,12 @@ namespace Employees.ViewModels
         public ICommand OpenEmployeesWindowForAdd => new DelegateCommand(() =>
         {
             Parent.EmployeeViewModel.SelectedEmployee = null;
+            Parent.EmployeeViewModel.IdFilterList = Project.Participants.Select(x => x.EmployeeId);
             Parent.EmployeeViewModel.OpenWindow<EmployeeViewModel, EmployeeView>(new DelegateCommand(() =>
             {
                 Parent.EmployeeViewModel.CloseWindow();
                 
-                Project.AddParticipant(Project, Parent.EmployeeViewModel.SelectedEmployee);
+                Project.AddParticipant(Parent.EmployeeViewModel.SelectedEmployee);
                 Project.UpdateParticipants();
             }));
         });
@@ -203,11 +205,11 @@ namespace Employees.ViewModels
         {
             Clear();
             Projects = DBModel.ProjectsTable.ToList();
-            UpdateProjects();
+            UpdateCollection();
             OnUpdateCollection?.Execute(null);
         }
-
-        private void UpdateProjects()
+        
+        public override void UpdateCollection()
         {
             var selectedId = SelectedProject?.Id;
             FilteredProjects =
@@ -219,7 +221,5 @@ namespace Employees.ViewModels
         private bool CanExecuteUpsertCommand(Project project)
             => project != null && !project.Name.IsEmpty() &&
                !Projects.Any(d => d.Name == project.Name && d.Id != project.Id);
-
-        protected override void RaiseSearchChanged() => UpdateProjects();
     }
 }

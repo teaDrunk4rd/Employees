@@ -41,24 +41,28 @@ namespace Employees.ViewModels
         public ICommand OpenEmployeeWindow => new DelegateCommand(() =>
         {
             EmployeeViewModel.SelectedEmployee = null;
+            EmployeeViewModel.RemoveFilter();
             EmployeeViewModel.OpenWindow<EmployeeViewModel, EmployeeView>();
         });
         
         public ICommand OpenPositionWindow => new DelegateCommand(() =>
         {
             PositionViewModel.SelectedPosition = null;
+            PositionViewModel.RemoveFilter();
             PositionViewModel.OpenWindow<PositionViewModel, PositionView>();
         });
         
         public ICommand OpenDepartmentWindow => new DelegateCommand(() =>
         {
             DepartmentViewModel.SelectedDepartment = null;
+            DepartmentViewModel.RemoveFilter();
             DepartmentViewModel.OpenWindow<DepartmentViewModel, DepartmentView>();
         });
         
         public ICommand OpenSkillWindow => new DelegateCommand(() =>
         {
             SkillsViewModel.SelectedSkill = null;
+            SkillsViewModel.RemoveFilter();
             SkillsViewModel.OpenWindow<SkillViewModel, SkillView>();
         });
     }

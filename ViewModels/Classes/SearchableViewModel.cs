@@ -15,10 +15,10 @@ namespace Employees.ViewModels.Classes
                 if (Equals(_search, value)) return;
                 _search = value;
                 RaisePropertyChanged(nameof(Search));
-                RaiseSearchChanged();
+                UpdateCollection();
             }
         }
 
-        protected abstract void RaiseSearchChanged();
+        public abstract void UpdateCollection();
     }
 }

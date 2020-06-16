@@ -121,15 +121,17 @@ namespace Employees.ViewModels
         {
             Clear();
             Skills = DBModel.SkillsTable.ToList();
-            UpdateSkills();
+            UpdateCollection();
             OnUpdateCollection?.Execute(null);
         }
 
-        private void UpdateSkills()
+        public override void UpdateCollection()
         {
             var selectedId = SelectedSkill?.Id;
-            FilteredSkills =
-                new ObservableCollection<Skill>(Skills.Where(d => d.Search(Search)).OrderBy(d => d.Name));
+            FilteredSkills = new ObservableCollection<Skill>(
+                Skills.Where(d => d.Search(Search) && IdFilterList.All(f => f != d.Id))
+                    .OrderBy(d => d.Name)
+            );
             if (selectedId != null)
                 SelectedSkill = FilteredSkills.FirstOrDefault(d => d.Id == selectedId);
         }
@@ -137,7 +139,5 @@ namespace Employees.ViewModels
         private bool CanExecuteUpsertCommand(Skill skill)
             => skill != null && !skill.Name.IsEmpty() &&
                !Skills.Any(d => d.Name == skill.Name && d.Id != skill.Id);
-
-        protected override void RaiseSearchChanged() => UpdateSkills();
     }
 }

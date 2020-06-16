@@ -31,8 +31,8 @@ namespace Employees.Classes
         public static MessageBoxResult ShowConfirmationModal()
             => MessageBox.Show("Вы уверены?", "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Warning);
         
-        public static void OpenWindow<VM, W>(this VM viewModel, ICommand selectionCommand=null, ICommand onOpenCommand=null) // TODO: Исправить, нарушает MVVM
-            where VM : LookupViewModel
+        public static void OpenWindow<VM, W>(this VM viewModel, ICommand selectionCommand=null, ICommand onOpenCommand=null)
+            where VM : LookupViewModel // TODO: Исправить, нарушает MVVM
             where W : Window, new()
         {
             viewModel.Mode = WindowMode.Read;
@@ -59,6 +59,12 @@ namespace Employees.Classes
             {
                 if (window.DataContext == viewModel) window.Close();
             }
+        }
+
+        public static void CloseWindow(this LookupViewModel viewModel)
+        {
+            ((ViewModelBase) viewModel).CloseWindow();
+            viewModel.RemoveFilter();
         }
     }
 }

@@ -163,16 +163,17 @@ namespace Employees.ViewModels
         public ICommand OpenSkillsWindowForAdd => new DelegateCommand(() =>
         {
             Parent.SkillsViewModel.SelectedSkill = null;
+            Parent.SkillsViewModel.IdFilterList = Employee.Skills.Select(x => x.SkillId);
             Parent.SkillsViewModel.OpenWindow<SkillViewModel, SkillView>(new DelegateCommand(() =>
             {
                 var skillLevelChooserViewModel = new SkillLevelChooserViewModel { SkillName = Parent.SkillsViewModel.SelectedSkill.Name };
                 skillLevelChooserViewModel.OpenModal<SkillLevelChooserViewModel, SkillLevelChooserView>(
                     new DelegateCommand(() =>
-                    { // TODO: убрать возможность выбора одного и того же навыка
+                    {
                         skillLevelChooserViewModel.CloseWindow();
                         Parent.SkillsViewModel.CloseWindow();
                         
-                        Employee.AddSkill(Employee, Parent.SkillsViewModel.SelectedSkill, skillLevelChooserViewModel.Level);
+                        Employee.AddSkill(Parent.SkillsViewModel.SelectedSkill, skillLevelChooserViewModel.Level);
                         Employee.UpdateSkills();
                     })
                 );
@@ -201,22 +202,24 @@ namespace Employees.ViewModels
         {
             Clear();
             Employees = DBModel.EmployeesTable.ToList();
-            UpdateEmployees();
+            UpdateCollection();
             OnUpdateCollection?.Execute(null);
         }
 
         public void UpdateEverything()
         {
-            UpdateEmployees();
+            UpdateCollection();
             UpdatePosition();
             UpdateDepartment();
         }
 
-        private void UpdateEmployees()
+        public override void UpdateCollection()
         {
             var selectedId = SelectedEmployee?.Id;
-            FilteredEmployees = 
-                new ObservableCollection<Employee>(Employees.Where(e => e.Search(Search)).OrderBy(e => e.FullName));
+            FilteredEmployees = new ObservableCollection<Employee>(
+                Employees.Where(e => e.Search(Search) && IdFilterList.All(f => f != e.Id))
+                    .OrderBy(e => e.FullName)
+            );
             if (selectedId != null)
                 SelectedEmployee = FilteredEmployees.FirstOrDefault(d => d.Id == selectedId);
         }
@@ -246,7 +249,5 @@ namespace Employees.ViewModels
         private bool CanExecuteUpsertCommand(Employee employee)
             => employee != null && !employee.Surname.IsEmpty() && !employee.Name.IsEmpty() && !employee.Phone.IsEmpty() 
                && !employee.Address.IsEmpty() && !employee.PassportNumberSeries.IsEmpty() && !employee.PassportInfoWhom.IsEmpty();
-
-        protected override void RaiseSearchChanged() => UpdateEmployees();
     }
 }

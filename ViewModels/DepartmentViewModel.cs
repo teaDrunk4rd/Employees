@@ -121,11 +121,11 @@ namespace Employees.ViewModels
         {
             Clear();
             Departments = DBModel.DepartmentsTable.ToList();
-            UpdateDepartments();
+            UpdateCollection();
             OnUpdateCollection?.Execute(null);
         }
 
-        private void UpdateDepartments()
+        public override void UpdateCollection()
         {
             var selectedId = SelectedDepartment?.Id;
             FilteredDepartments =
@@ -138,6 +138,5 @@ namespace Employees.ViewModels
             => department != null && !department.Name.IsEmpty() &&
                !Departments.Any(d => d.Name == department.Name && d.Id != department.Id);
 
-        protected override void RaiseSearchChanged() => UpdateDepartments();
     }
 }
