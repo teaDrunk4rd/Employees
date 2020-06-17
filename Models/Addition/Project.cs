@@ -80,7 +80,7 @@ namespace DataModels
                 participants = ParticipantsToAdd;
             
             Participants = new ObservableCollection<ProjectParticipant>(
-                participants.Where(p => !ParticipantsToDelete.Any(pp => pp != p))
+                participants.Where(p => !ParticipantsToDelete.Any(pp => pp == p))
             );
             RaisePropertyChanged(nameof(Participants));
         }
@@ -116,8 +116,23 @@ namespace DataModels
                     DBModel.EmployeesDB.Delete(s);
             });
         }
-        
-        public object Clone() => MemberwiseClone();
+
+        public object Clone()
+        {
+            var clone = (Project) MemberwiseClone();
+            
+            clone.SkillsToAdd = new List<ProjectRequiredSkill>(SkillsToAdd);
+            clone.SkillsToDelete = new List<ProjectRequiredSkill>(SkillsToDelete);
+            clone.Skills = new ObservableCollection<ProjectRequiredSkill>();
+            clone.Requiredskillsidfks = new List<ProjectRequiredSkill>(Requiredskillsidfks);
+            
+            clone.ParticipantsToAdd = new List<ProjectParticipant>(ParticipantsToAdd);
+            clone.ParticipantsToDelete = new List<ProjectParticipant>(ParticipantsToDelete);
+            clone.Participants = new ObservableCollection<ProjectParticipant>();
+            clone.Participantidfks = new List<ProjectParticipant>(Participantidfks);
+            
+            return clone;
+        }
 
         public bool Search(string search) => 
             search.IsEmpty() || Name.Search(search) || StartDate.Search(search) || FinishDate.Search(search);

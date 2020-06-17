@@ -104,7 +104,6 @@ namespace Employees.ViewModels
         {
             Mode = WindowMode.Add;
             Project = new Project {StartDate = DateTime.Now, FinishDate = DateTime.Now};
-            Project.UpdateSkills();
         }, () =>  Mode == WindowMode.Read);
 
         public override ICommand ShowEditForm => new DelegateCommand(() => 
@@ -209,6 +208,8 @@ namespace Employees.ViewModels
         private void Clear()
         {
             Project = null;
+            // SelectedProject?.ClearSkills();
+            // SelectedProject?.ClearParticipants();
             Mode = WindowMode.Read;
         }
 

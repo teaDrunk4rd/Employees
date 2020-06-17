@@ -92,14 +92,13 @@ namespace Employees.ViewModels
         {
             Mode = WindowMode.Add;
             Employee = new Employee{PassportInfoWhen = DateTime.Today};
-            Employee.UpdateSkills();
         }, () =>  Mode == WindowMode.Read);
 
         public override ICommand ShowEditForm => new DelegateCommand(() =>
         {
+            Mode = WindowMode.Edit;
             Employee = (Employee) SelectedEmployee.Clone();
             Employee.UpdateSkills();
-            Mode = WindowMode.Edit;
             UpdatePosition();
             UpdateDepartment();
         }, 
@@ -193,11 +192,7 @@ namespace Employees.ViewModels
         private void Clear()
         {
             Employee = null;
-            if (SelectedEmployee != null)
-            {
-                SelectedEmployee.SkillsToAdd = new List<EmployeeSkill>();
-                SelectedEmployee.SkillsToDelete = new List<EmployeeSkill>();
-            }
+            // SelectedEmployee?.ClearSkills();
             Mode = WindowMode.Read;
         }
 

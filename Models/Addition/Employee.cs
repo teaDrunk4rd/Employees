@@ -77,8 +77,17 @@ namespace DataModels
                     DBModel.EmployeesDB.Delete(s);
             });
         }
-        
-        public object Clone() => MemberwiseClone();
+
+        public object Clone()
+        {
+            var clone = (Employee) MemberwiseClone();
+            clone.SkillsToAdd = new List<EmployeeSkill>(SkillsToAdd);
+            clone.SkillsToDelete = new List<EmployeeSkill>(SkillsToDelete);
+            clone.Skills = new ObservableCollection<EmployeeSkill>();
+            clone.Skillidfks = new List<EmployeeSkill>(Skillidfks);
+            clone.Projectparticipantidfks = new List<ProjectParticipant>(Projectparticipantidfks);
+            return clone;
+        }
         
         public bool Search(string search) 
             => search.IsEmpty() || FullName.Search(search) || Phone.Search(search) 
