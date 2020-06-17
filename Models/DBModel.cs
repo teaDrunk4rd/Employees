@@ -34,7 +34,7 @@ namespace Employees.Models
             PositionsTable = EmployeesDB.Positions;
             SkillsTable = EmployeesDB.Skills;
             ProjectsTable = EmployeesDB.Projects
-                .LoadWith(e => e.Participantidfks.First().Employee)
+                .LoadWith(e => e.Participantidfks.First().Employee.Skillidfks.First().Skill)
                 .LoadWith(e => e.Requiredskillsidfks.First().Skill);
         }
     }

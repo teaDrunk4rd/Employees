@@ -96,7 +96,8 @@
                                   SelectedItem="{Binding SelectedProjectRequiredSkill}"
                                   ItemsSource="{Binding Project.Skills}">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Skill.Name}" Width="*" FontSize="11" />
+                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Skill.Name}" 
+                                                        Width="*" FontSize="11" />
                                     <DataGridTextColumn Header="Уровень" Binding="{Binding Path=Level}" FontSize="12" />
                                 </DataGrid.Columns>
                             </DataGrid>
@@ -110,14 +111,25 @@
 
                     <DockPanel Grid.Column="2" Margin="10 5 5 10">
                         <!-- TODO: сделать отдельным компонентом -->
-                        <Label DockPanel.Dock="Top" Content="Участники проекта" />
+                        <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Command="{Binding PickTeam}" Content="Подобрать команду" FontSize="11" Height="20" Padding="5 -3" />
+                            <Label Content="Участники проекта" />
+                        </DockPanel>
                         <Border Style="{StaticResource BasicBorder}" Padding="1 0">
                             <DataGrid Style="{StaticResource EmptyDataMessage}" Margin="0"
                                   SelectedItem="{Binding SelectedProjectParticipant}"
                                   ItemsSource="{Binding Project.Participants}">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Участник" Binding="{Binding Path=Employee.SurnameInitials}" Width="*" FontSize="11" />
-                                    <!-- <DataGridTextColumn Header="Навыки" Binding="{Binding Path=Level}" FontSize="11" /> -->
+                                    <DataGridTextColumn Header="Участник" Binding="{Binding Path=Employee.SurnameInitials}" 
+                                                        Width="*" FontSize="11" />
+                                    <DataGridTextColumn Header="Навыки" FontSize="11"
+                                                        Binding="{Binding Path=Employee.Skillidfks, Converter={StaticResource CollectionToCountConverter}}">
+                                        <DataGridTextColumn.CellStyle>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                                <Setter Property="ToolTip" Value="{Binding Path=Employee.SkillsToolTip}" />
+                                            </Style>
+                                        </DataGridTextColumn.CellStyle>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Border>

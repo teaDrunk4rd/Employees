@@ -1721,8 +1721,8 @@ namespace DataModels
 	{
 		[Column("id"),          PrimaryKey,  Identity] public long     Id         { get; set; } // bigint
 		[Column("name"),           Nullable          ] public string   Name       { get; set; } // text
-		[Column("start_date"),  NotNull              ] public DateTime StartDate  { get; set; } // timestamp (6) without time zone
-		[Column("finish_date"), NotNull              ] public DateTime FinishDate { get; set; } // timestamp (6) without time zone
+		[Column("start_date"),     Nullable          ] public DateTime? StartDate  { get; set; } // timestamp (6) without time zone
+		[Column("finish_date"),    Nullable          ] public DateTime? FinishDate { get; set; } // timestamp (6) without time zone
 
 		#region Associations
 

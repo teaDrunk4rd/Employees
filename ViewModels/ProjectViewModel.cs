@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using DataModels;
 using DevExpress.Mvvm;
+using DevExpress.Mvvm.Native;
 using Employees.Classes;
 using Employees.Models;
 using Employees.ViewModels.Classes;
@@ -103,7 +104,7 @@ namespace Employees.ViewModels
         public override ICommand ShowAddForm => new DelegateCommand(() =>
         {
             Mode = WindowMode.Add;
-            Project = new Project {StartDate = DateTime.Now, FinishDate = DateTime.Now};
+            Project = new Project ();
         }, () =>  Mode == WindowMode.Read);
 
         public override ICommand ShowEditForm => new DelegateCommand(() => 
@@ -148,11 +149,12 @@ namespace Employees.ViewModels
         public ICommand OpenSkillsWindowForAdd => new DelegateCommand(() =>
         {
             Parent.SkillsViewModel.SelectedSkill = null;
-            Parent.SkillsViewModel.SetFilter(
-                skills => new ObservableCollection<Skill>(
-                    skills.Where(s => Project.Skills.All(x => x.SkillId != s.Id))
-                )
-            );
+            if (Project.Skills != null)
+                Parent.SkillsViewModel.SetFilter(
+                    skills => new ObservableCollection<Skill>(
+                        skills.Where(s => Project.Skills.All(x => x.SkillId != s.Id))
+                    )
+                );
             Parent.SkillsViewModel.OpenWindow<SkillViewModel, SkillView>(new DelegateCommand(() =>
             {
                 var skillLevelChooserViewModel = new SkillLevelChooserViewModel { SkillName = Parent.SkillsViewModel.SelectedSkill.Name };
@@ -184,7 +186,7 @@ namespace Employees.ViewModels
                     employees => new ObservableCollection<Employee>(
                         employees.Where(e => 
                             (Project.Participants.IsEmpty() || Project.Participants.All(x => x.EmployeeId != e.Id)) &&
-                            (Project.Skills.IsEmpty() || !e.IsInProject(Project.StartDate) && e.HaveRequiredSkills(Project.Skills))
+                            /*(Project.Skills.IsEmpty() || e.HaveRequiredSkills(Project.Skills) &&*/ !e.IsInProject(Project.StartDate)
                         )
                     )
                 );
@@ -205,11 +207,19 @@ namespace Employees.ViewModels
             Project.UpdateParticipants();
         }, () =>  SelectedProjectParticipant != null);
 
+        public ICommand PickTeam => new DelegateCommand(() =>
+        {
+            DBModel.EmployeesTable.ToList().Where(e =>
+                (Project.Participants.IsEmpty() || Project.Participants.All(x => x.EmployeeId != e.Id)) &&
+                (Project.Skills.IsEmpty() || e.HaveRequiredSkills(Project.Skills)) &&
+                !e.IsInProject(Project.StartDate)
+            ).ForEach(e => Project.AddParticipant(e));
+            Project.UpdateParticipants();
+        });
+
         private void Clear()
         {
             Project = null;
-            // SelectedProject?.ClearSkills();
-            // SelectedProject?.ClearParticipants();
             Mode = WindowMode.Read;
         }
 
@@ -231,7 +241,7 @@ namespace Employees.ViewModels
         }
 
         private bool CanExecuteUpsertCommand(Project project)
-            => project != null && !project.Name.IsEmpty() &&
+            => project != null && !project.Name.IsEmpty() && project.StartDate != null && project.FinishDate != null &&
                !Projects.Any(d => d.Name == project.Name && d.Id != project.Id);
     }
 }

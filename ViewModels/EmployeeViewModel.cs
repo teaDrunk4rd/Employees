@@ -192,7 +192,6 @@ namespace Employees.ViewModels
         private void Clear()
         {
             Employee = null;
-            // SelectedEmployee?.ClearSkills();
             Mode = WindowMode.Read;
         }
 

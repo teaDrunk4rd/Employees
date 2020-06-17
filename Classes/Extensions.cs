@@ -22,6 +22,9 @@ namespace Employees.Classes
                 || sourceDateTime.ToString("dd.MM.yyyy").Contains(stringDateTime);
         }
 
+        public static bool Search(this DateTime? sourceDateTime, string stringDateTime)
+            => sourceDateTime != null && sourceDateTime.Search(stringDateTime);
+
         public static bool Search(this string source, string word)
             => source.IndexOf(word, StringComparison.OrdinalIgnoreCase) >= 0;
 

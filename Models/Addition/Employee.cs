@@ -16,6 +16,8 @@ namespace DataModels
 
         public string SurnameInitials =>
             $"{Surname} {Name.First()}. {(!Patronymic.IsEmpty() ? Patronymic.First() : '\0')}{(!Patronymic.IsEmpty() ? '.' : '\0')}";
+
+        public string SkillsToolTip => string.Join("\r\n", Skillidfks);
         
         public List<EmployeeSkill> SkillsToAdd { get; set; } = new List<EmployeeSkill>();
         
@@ -23,7 +25,7 @@ namespace DataModels
 
         public ObservableCollection<EmployeeSkill> Skills { get; set; }
 
-        public bool IsInProject(DateTime projectStartDate)
+        public bool IsInProject(DateTime? projectStartDate)
             => Projectparticipantidfks.Any(p => p.Project.FinishDate >= projectStartDate);
 
         public bool HaveRequiredSkills(IEnumerable<ProjectRequiredSkill> skills)
