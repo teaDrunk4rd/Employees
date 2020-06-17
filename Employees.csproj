@@ -129,6 +129,7 @@
     <Compile Include="Models\Addition\ProjectRequiredSkill.cs" />
     <Compile Include="Models\Addition\Skill.cs" />
     <Compile Include="ViewModels\Classes\LookupViewModel.cs" />
+    <Compile Include="ViewModels\Classes\FilteredLookupViewModel.cs" />
     <Compile Include="ViewModels\Classes\ModalViewModel.cs" />
     <Compile Include="ViewModels\Classes\SearchableViewModel.cs" />
     <Compile Include="ViewModels\DepartmentViewModel.cs" />

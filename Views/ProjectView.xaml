@@ -49,39 +49,38 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-                <Grid Grid.Row="0">
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0">
+                    <Label Content="Наименование" />
+                    <TextBox Text="{Binding Project.Name, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+                
+                <Grid Grid.Row="0" Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
-                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Margin="0 0 10 0">
-                        <Label Content="Наименование" />
-                        <TextBox Text="{Binding Project.Name, UpdateSourceTrigger=PropertyChanged}" />
+                    
+                    <StackPanel Grid.Column="0" Margin="10 0 0 0">
+                        <Label Content="Дата начала" />
+                        <Border Style="{StaticResource BasicBorder}" Height="28">
+                            <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding Project.StartDate}" Height="28" Margin="5 1" />
+                        </Border>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1" Margin="0 0 10 0">
-                        <StackPanel>
-                            <Label Content="Дата начала" />
-                            <Border Style="{StaticResource BasicBorder}" Height="28">
-                                <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding Project.StartDate}" Height="28" Margin="5 1" />
-                            </Border>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="2">
-                        <StackPanel>
-                            <Label Content="Дата окончания" />
-                            <Border Style="{StaticResource BasicBorder}" Height="28">
-                                <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding Project.FinishDate}" Height="28" Margin="5 1" />
-                            </Border>
-                        </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="10 0 0 0">
+                        <Label Content="Дата окончания" />
+                        <Border Style="{StaticResource BasicBorder}" Height="28">
+                            <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding Project.FinishDate}" Height="28" Margin="5 1" />
+                        </Border>
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="1" Grid.Column="0">
+                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="24" />
@@ -124,13 +123,13 @@
                         </Border>
                     </DockPanel>
 
-                    <StackPanel Orientation="Vertical" Grid.Column="4" Margin="0 30 0 0">
+                    <StackPanel Orientation="Vertical" Grid.Column="3" Margin="0 30 0 0">
                         <Button Command="{Binding OpenEmployeesWindowForAdd}" Content="+" Padding="8 0 8 2" />
                         <Button Command="{Binding DeleteParticipant}" Content="-" Padding="8 0 8 2" Margin="0 8" />
                     </StackPanel>
                 </Grid>
                 
-                <StackPanel Grid.Row="2" Style="{StaticResource BottomButtons}">
+                <StackPanel Grid.Row="2" Grid.Column="1" Style="{StaticResource BottomButtons}">
                     <Button Command="{Binding ClearCommand}" Content="Отмена" Margin="4 0" />
                     <Button Command="{Binding OkCommand}" Content="ОК" Margin="4 0" />
                 </StackPanel>

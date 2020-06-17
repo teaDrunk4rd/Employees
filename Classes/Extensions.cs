@@ -60,11 +60,5 @@ namespace Employees.Classes
                 if (window.DataContext == viewModel) window.Close();
             }
         }
-
-        public static void CloseWindow(this LookupViewModel viewModel)
-        {
-            ((ViewModelBase) viewModel).CloseWindow();
-            viewModel.RemoveFilter();
-        }
     }
 }

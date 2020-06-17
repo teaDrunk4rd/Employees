@@ -1,4 +1,5 @@
-﻿using DataModels;
+﻿using System.Linq;
+using DataModels;
 using LinqToDB;
 
 namespace Employees.Models
@@ -27,13 +28,14 @@ namespace Employees.Models
             EmployeesTable = EmployeesDB.Employees
                 .LoadWith(e => e.Department)
                 .LoadWith(e => e.Position)
-                .LoadWith(e => e.Skillidfks);
+                .LoadWith(e => e.Skillidfks.First().Skill)
+                .LoadWith(e => e.Projectparticipantidfks.First().Project);
             DepartmentsTable = EmployeesDB.Departments;
             PositionsTable = EmployeesDB.Positions;
             SkillsTable = EmployeesDB.Skills;
             ProjectsTable = EmployeesDB.Projects
-                .LoadWith(e => e.Participantidfks)
-                .LoadWith(e => e.Requiredskillsidfks);
+                .LoadWith(e => e.Participantidfks.First().Employee)
+                .LoadWith(e => e.Requiredskillsidfks.First().Skill);
         }
     }
 }

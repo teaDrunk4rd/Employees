@@ -111,8 +111,6 @@ namespace Employees.ViewModels
         {
             Mode = WindowMode.Edit;
             Project = (Project) SelectedProject.Clone();
-            Project.LoadSkills();
-            Project.LoadParticipants();
             Project.UpdateSkills();
             Project.UpdateParticipants();
         }, 
@@ -151,7 +149,11 @@ namespace Employees.ViewModels
         public ICommand OpenSkillsWindowForAdd => new DelegateCommand(() =>
         {
             Parent.SkillsViewModel.SelectedSkill = null;
-            Parent.SkillsViewModel.IdFilterList = Project.Skills.Select(x => x.SkillId);
+            Parent.SkillsViewModel.SetFilter(
+                skills => new ObservableCollection<Skill>(
+                    skills.Where(s => Project.Skills.All(x => x.SkillId != s.Id))
+                )
+            );
             Parent.SkillsViewModel.OpenWindow<SkillViewModel, SkillView>(new DelegateCommand(() =>
             {
                 var skillLevelChooserViewModel = new SkillLevelChooserViewModel { SkillName = Parent.SkillsViewModel.SelectedSkill.Name };
@@ -160,6 +162,7 @@ namespace Employees.ViewModels
                     {
                         skillLevelChooserViewModel.CloseWindow();
                         Parent.SkillsViewModel.CloseWindow();
+                        Parent.SkillsViewModel.RemoveFilter();
                         
                         Project.AddSkill(Parent.SkillsViewModel.SelectedSkill, skillLevelChooserViewModel.Level);
                         Project.UpdateSkills();
@@ -177,11 +180,19 @@ namespace Employees.ViewModels
         
         public ICommand OpenEmployeesWindowForAdd => new DelegateCommand(() =>
         {
-            Parent.EmployeeViewModel.SelectedEmployee = null;
-            Parent.EmployeeViewModel.IdFilterList = Project.Participants.Select(x => x.EmployeeId);
+            if (!Project.Participants.IsEmpty() || !Project.Skills.IsEmpty())
+                Parent.EmployeeViewModel.SetFilter(
+                    employees => new ObservableCollection<Employee>(
+                        employees.Where(e => 
+                            (Project.Participants.IsEmpty() || Project.Participants.All(x => x.EmployeeId != e.Id)) &&
+                            (Project.Skills.IsEmpty() || !e.IsInProject(Project.StartDate) && e.HaveRequiredSkills(Project.Skills))
+                        )
+                    )
+                );
             Parent.EmployeeViewModel.OpenWindow<EmployeeViewModel, EmployeeView>(new DelegateCommand(() =>
             {
                 Parent.EmployeeViewModel.CloseWindow();
+                Parent.EmployeeViewModel.RemoveFilter();
                 
                 Project.AddParticipant(Parent.EmployeeViewModel.SelectedEmployee);
                 Project.UpdateParticipants();

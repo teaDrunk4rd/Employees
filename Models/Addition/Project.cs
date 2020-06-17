@@ -20,16 +20,6 @@ namespace DataModels
         public List<ProjectParticipant> ParticipantsToDelete { get; set; } = new List<ProjectParticipant>();
         public ObservableCollection<ProjectParticipant> Participants { get; set; }
 
-        public void LoadSkills()
-        {
-            Requiredskillsidfks.ForEach(rs => rs.Skill = DBModel.SkillsTable.Find(rs.SkillId));
-        }
-
-        public void LoadParticipants()
-        {
-            Participantidfks.ForEach(p => p.Employee = DBModel.EmployeesTable.Find(p.EmployeeId));
-        }
-
         public void AddSkill(Skill skill, short level)
         {
             var requiredSkill = new ProjectRequiredSkill
@@ -73,7 +63,9 @@ namespace DataModels
             else if (!SkillsToAdd.IsEmpty())
                 skills = SkillsToAdd;
             
-            Skills = new ObservableCollection<ProjectRequiredSkill>(skills.Where(rs => SkillsToDelete.All(s => s != rs)));
+            Skills = new ObservableCollection<ProjectRequiredSkill>(
+                skills.Where(rs => !SkillsToDelete.Any(s => s == rs))
+            );
             RaisePropertyChanged(nameof(Skills));
         }
 
@@ -87,7 +79,9 @@ namespace DataModels
             else if (!ParticipantsToAdd.IsEmpty())
                 participants = ParticipantsToAdd;
             
-            Participants = new ObservableCollection<ProjectParticipant>(participants.Where(p => ParticipantsToDelete.All(pp => pp != p)));
+            Participants = new ObservableCollection<ProjectParticipant>(
+                participants.Where(p => !ParticipantsToDelete.Any(pp => pp != p))
+            );
             RaisePropertyChanged(nameof(Participants));
         }
 

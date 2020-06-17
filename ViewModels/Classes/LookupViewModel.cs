@@ -9,7 +9,6 @@ namespace Employees.ViewModels.Classes
     {
         private WindowMode _mode;
         private ICommand _onSelection;
-        private IEnumerable<long> _idFilterList = new List<long>();
         
         public WindowMode Mode
         {
@@ -19,18 +18,6 @@ namespace Employees.ViewModels.Classes
                 if (Equals(_mode, value)) return;
                 _mode = value;
                 RaisePropertiesChanged(nameof(Mode), nameof(OkCommand), nameof(FormName), nameof(FormVisibility));
-            }
-        }
-
-        public IEnumerable<long> IdFilterList
-        {
-            get => _idFilterList;
-            set
-            {
-                if (Equals(_idFilterList, value)) return;
-                _idFilterList = value;
-                RaisePropertyChanged(nameof(IdFilterList));
-                UpdateCollection();
             }
         }
 
@@ -56,8 +43,6 @@ namespace Employees.ViewModels.Classes
                 RaisePropertyChanged(nameof(OnSelection));
             }
         }
-
-        public void RemoveFilter() => IdFilterList = new List<long>();
 
         // TODO: <fix this>
         public string FormName => Mode == WindowMode.Add ? "Добавление" : "Редактирование";

@@ -23,10 +23,11 @@ namespace DataModels
 
         public ObservableCollection<EmployeeSkill> Skills { get; set; }
 
-        public void LoadSkills()
-        {
-            Skillidfks.ForEach(es => es.Skill = DBModel.SkillsTable.Find(es.SkillId));
-        }
+        public bool IsInProject(DateTime projectStartDate)
+            => Projectparticipantidfks.Any(p => p.Project.FinishDate >= projectStartDate);
+
+        public bool HaveRequiredSkills(IEnumerable<ProjectRequiredSkill> skills)
+            => Skillidfks.Any(s => skills.Any(ps => ps.SkillId == s.SkillId && ps.Level <= s.Level));
 
         public void AddSkill( Skill skill, short level)
         {
@@ -55,7 +56,9 @@ namespace DataModels
             else if (!SkillsToAdd.IsEmpty())
                 skills = SkillsToAdd;
             
-            Skills = new ObservableCollection<EmployeeSkill>(skills.Where(es => SkillsToDelete.All(s => s != es)));
+            Skills = new ObservableCollection<EmployeeSkill>(
+                skills.Where(es => !SkillsToDelete.Any(s => s == es))
+            );
             RaisePropertyChanged(nameof(Skills));
         }
 

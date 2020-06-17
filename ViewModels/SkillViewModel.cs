@@ -12,7 +12,7 @@ using LinqToDB;
 
 namespace Employees.ViewModels
 {
-    public class SkillViewModel : LookupViewModel
+    public class SkillViewModel : FilteredLookupViewModel<Skill>
     {
         private Skill _selectedSkill;
         private Skill _skill;
@@ -129,9 +129,10 @@ namespace Employees.ViewModels
         {
             var selectedId = SelectedSkill?.Id;
             FilteredSkills = new ObservableCollection<Skill>(
-                Skills.Where(d => d.Search(Search) && IdFilterList.All(f => f != d.Id))
-                    .OrderBy(d => d.Name)
+                Skills.Where(d => d.Search(Search)).OrderBy(d => d.Name)
             );
+            if (Filter != null)
+                FilteredSkills = Filter.Invoke(FilteredSkills);
             if (selectedId != null)
                 SelectedSkill = FilteredSkills.FirstOrDefault(d => d.Id == selectedId);
         }

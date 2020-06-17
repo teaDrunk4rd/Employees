@@ -7,7 +7,6 @@ using DevExpress.Mvvm;
 using Employees.Views;
 using System.Windows.Input;
 using DataModels;
-using DevExpress.Mvvm.Native;
 using Employees.Classes;
 using Employees.Models;
 using Employees.ViewModels.Classes;
@@ -15,7 +14,7 @@ using LinqToDB;
 
 namespace Employees.ViewModels
 {
-    public class EmployeeViewModel : LookupViewModel
+    public class EmployeeViewModel : FilteredLookupViewModel<Employee>
     {
         private Employee _selectedEmployee;
         private Employee _employee;
@@ -99,7 +98,6 @@ namespace Employees.ViewModels
         public override ICommand ShowEditForm => new DelegateCommand(() =>
         {
             Employee = (Employee) SelectedEmployee.Clone();
-            Employee.LoadSkills();
             Employee.UpdateSkills();
             Mode = WindowMode.Edit;
             UpdatePosition();
@@ -163,7 +161,11 @@ namespace Employees.ViewModels
         public ICommand OpenSkillsWindowForAdd => new DelegateCommand(() =>
         {
             Parent.SkillsViewModel.SelectedSkill = null;
-            Parent.SkillsViewModel.IdFilterList = Employee.Skills.Select(x => x.SkillId);
+            Parent.SkillsViewModel.SetFilter(
+                skills => new ObservableCollection<Skill>(
+                    skills.Where(s => Employee.Skills.All(x => x.SkillId != s.Id))
+                )
+            );
             Parent.SkillsViewModel.OpenWindow<SkillViewModel, SkillView>(new DelegateCommand(() =>
             {
                 var skillLevelChooserViewModel = new SkillLevelChooserViewModel { SkillName = Parent.SkillsViewModel.SelectedSkill.Name };
@@ -172,6 +174,7 @@ namespace Employees.ViewModels
                     {
                         skillLevelChooserViewModel.CloseWindow();
                         Parent.SkillsViewModel.CloseWindow();
+                        Parent.SkillsViewModel.RemoveFilter();
                         
                         Employee.AddSkill(Parent.SkillsViewModel.SelectedSkill, skillLevelChooserViewModel.Level);
                         Employee.UpdateSkills();
@@ -217,9 +220,10 @@ namespace Employees.ViewModels
         {
             var selectedId = SelectedEmployee?.Id;
             FilteredEmployees = new ObservableCollection<Employee>(
-                Employees.Where(e => e.Search(Search) && IdFilterList.All(f => f != e.Id))
-                    .OrderBy(e => e.FullName)
+                Employees.Where(e => e.Search(Search)).OrderBy(e => e.FullName)
             );
+            if (Filter != null)
+                FilteredEmployees = Filter.Invoke(FilteredEmployees);
             if (selectedId != null)
                 SelectedEmployee = FilteredEmployees.FirstOrDefault(d => d.Id == selectedId);
         }
